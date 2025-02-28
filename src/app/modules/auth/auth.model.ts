@@ -13,6 +13,10 @@ const userSchema = new Schema<TUser, UserModel>({
         type: String,
         required: [true, 'Name is required']
     },
+    phoneNumber: {
+        type: String,
+        required: [true, 'Name is required']
+    },
     email: {
         type: String,
         required: [true, 'Email is required'],
