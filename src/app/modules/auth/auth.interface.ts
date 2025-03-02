@@ -20,6 +20,8 @@ export interface TUser {
     address?: string;
     facebook?: string;
     twitter?: string;
+    oldPassword?: string;
+    newPassword?: string;
 }
 
 export interface IJwtPayload {

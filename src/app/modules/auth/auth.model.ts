@@ -54,10 +54,11 @@ const userSchema = new Schema<TUser, UserModel>({
 userSchema.pre('save', async function (next) {
     const user = this
 
-    user.password = await bcrypt.hash(
-        user.password, Number(config.bcrypt_salt_rounds)
-    )
+    if (user.isModified('password')) {
+        user.password = await bcrypt.hash(user.password, Number(config.bcrypt_salt_rounds));
+    }
 })
+
 
 userSchema.post('save', async function (doc, next) {
     doc.password = ''

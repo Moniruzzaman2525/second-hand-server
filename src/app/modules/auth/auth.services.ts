@@ -6,6 +6,7 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 import config from "../../config";
 import { createToken } from "./auth.utils";
 import { StatusCodes } from "http-status-codes";
+import bcrypt from 'bcrypt'
 
 
 const createUserIntoDB = async (payload: TUser) => {
@@ -128,12 +129,19 @@ const getMe = async (authUser: IJwtPayload) => {
 
 
 const changesPassword = async ( payload: Partial<TUser>, authUser: IJwtPayload) => {
-
-
     const user = await AuthUser.findById(authUser.userId);
     if (!user) {
         throw new Error('User not found');
     }
+    const isMatch = await AuthUser.isPasswordMatch(payload.oldPassword ?? "", user.password);
+
+    if (!isMatch) {
+        throw new Error('Old password is incorrect');
+    }
+    await user.save();
+    user.password = payload.newPassword ?? "";
+    await user.save();
+    return { success: true, message: 'Password changed successfully' };
 }
 
 export const authUserServices = {
