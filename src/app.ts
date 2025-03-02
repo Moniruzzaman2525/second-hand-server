@@ -14,7 +14,7 @@ app.get('/', (req: Request, res: Response) => {
   res.send('Server running...!');
 });
 
-app.use('/api', router)
+app.use('/api/v1', router)
 app.use(globalErrorHandler)
 app.use('*', notFound)
 
