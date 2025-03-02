@@ -74,8 +74,7 @@ const getMe = catchAsync(async (req, res) => {
 
 
 const changesPassword = catchAsync(async (req, res) => {
-    const { user, body: payload,} = req;
-
+    const { user, body: payload} = req;
     const result = await authUserServices.changesPassword(
            payload,
            user as IJwtPayload

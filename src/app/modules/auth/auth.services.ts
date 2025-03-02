@@ -6,7 +6,6 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 import config from "../../config";
 import { createToken } from "./auth.utils";
 import { StatusCodes } from "http-status-codes";
-import bcrypt from 'bcrypt'
 
 
 const createUserIntoDB = async (payload: TUser) => {
@@ -70,7 +69,6 @@ const loginUserServices = async (payload: TUserLogin) => {
     if (isBlocked) {
         throw new AppError(403, 'This user is blocked !')
     }
-    console.log(user)
     const jwtPayload = {
         email: user.email,
         name: user.name,
@@ -78,7 +76,6 @@ const loginUserServices = async (payload: TUserLogin) => {
         userId: user._id,
     };
 
-    console.log(jwtPayload)
     const accessToken = createToken(jwtPayload, config.jwt_access_secret as string, config.jwt_access_expires_in as string)
     const refreshToken = createToken(jwtPayload, config.jwt_refresh_secret as string, config.jwt_refresh_expires_in as string)
 
@@ -129,7 +126,7 @@ const getMe = async (authUser: IJwtPayload) => {
 
 
 const changesPassword = async ( payload: Partial<TUser>, authUser: IJwtPayload) => {
-    const user = await AuthUser.findById(authUser.userId);
+    const user = await AuthUser.findById(authUser.userId).select('+password')
     if (!user) {
         throw new Error('User not found');
     }
