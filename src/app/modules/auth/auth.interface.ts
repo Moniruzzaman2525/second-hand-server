@@ -14,7 +14,12 @@ export interface TUser {
     password: string;
     phoneNumber: string;
     role?: 'admin' | 'user';
-    isBlocked?: boolean
+    isBlocked?: boolean;
+    description?: string;
+    location?: string;
+    address?: string;
+    facebook?: string;
+    twitter?: string;
 }
 
 export interface IJwtPayload {
