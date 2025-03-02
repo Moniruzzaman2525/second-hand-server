@@ -5,6 +5,7 @@ import { IJwtPayload } from '../auth/auth.interface';
 import AppError from '../../error/AppError';
 import { Product } from './products.model';
 import QueryBuilder from '../../builder/QueryBuilder';
+import { AuthUser } from '../auth/auth.model';
 
 const createProduct = async (
     productData: Partial<TProduct>,
@@ -99,6 +100,21 @@ const getSingleProduct = async (productId: string) => {
     };
 };
 
+
+const deleteProduct = async (productId: string, authUser: IJwtPayload) => {
+    const user = await AuthUser.findById(authUser.userId);
+    const product = await Product.findById(productId);
+
+    if (!user?.isBlocked) {
+        throw new AppError(StatusCodes.BAD_REQUEST, 'User is not active');
+    }
+    if (!product) {
+        throw new AppError(StatusCodes.NOT_FOUND, 'Product Not Found');
+    }
+
+    return await Product.findByIdAndDelete(productId);
+};
+
 export const ProductService = {
-    createProduct, getAllProduct, getAllUserProduct, getSingleProduct
+    createProduct, getAllProduct, getAllUserProduct, getSingleProduct, deleteProduct
 }
