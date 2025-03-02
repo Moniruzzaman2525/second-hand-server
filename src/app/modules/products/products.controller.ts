@@ -57,6 +57,27 @@ const getSingleProduct = catchAsync(async (req, res) => {
     });
 });
 
+const updateProduct = catchAsync(async (req, res) => {
+    const {
+        user,
+        body: payload,
+        params: { productId },
+    } = req;
+
+    const result = await ProductService.updateProduct(
+        productId,
+        payload,
+        req.files as IImageFiles,
+        user as IJwtPayload
+    );
+
+    sendResponse(res, {
+        statusCode: StatusCodes.OK,
+        success: true,
+        message: "Product updated successfully",
+        data: result,
+    });
+});
 
 const deleteProduct = catchAsync(async (req, res) => {
     const {
@@ -74,6 +95,8 @@ const deleteProduct = catchAsync(async (req, res) => {
         data: result,
     });
 });
+
+
 export const ProductController = {
-    createProduct, getAllProduct, getAllUserProductHandler, getSingleProduct, deleteProduct
+    createProduct, getAllProduct, getAllUserProductHandler, getSingleProduct, updateProduct, deleteProduct
 };
