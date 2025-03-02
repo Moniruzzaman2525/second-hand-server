@@ -2,6 +2,8 @@ import express from 'express'
 import { userValidation } from './auth.validation'
 import validateRequest from '../../middleware/validateRequest'
 import { userControllers } from './auth.controller'
+import auth from '../../middleware/auth'
+import { UserRole } from './auth.interface'
 
 const router = express.Router()
 
@@ -9,6 +11,7 @@ const router = express.Router()
 router.post('/register', validateRequest(userValidation.userValidationSchema), userControllers.createUserController)
 router.post('/login', validateRequest(userValidation.userValidationLoginSchema), userControllers.loginUserController)
 router.post('/refresh-token', validateRequest(userValidation.refreshTokenValidationSchema), userControllers.refreshToken)
+router.get('/get-me', auth(UserRole.USER, UserRole.ADMIN), userControllers.getMe);
 
 
 export const UserRoute = router
