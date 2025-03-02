@@ -22,7 +22,6 @@ const createProduct = catchAsync(async (req: Request, res: Response) => {
 });
 const getAllProduct = catchAsync(async (req, res) => {
     const result = await ProductService.getAllProduct(req.query);
-    console.log(req.query)
     sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
@@ -32,6 +31,19 @@ const getAllProduct = catchAsync(async (req, res) => {
     });
 });
 
+const getAllUserProductHandler = catchAsync(async (req, res) => {
+    const userID = req.user._id;
+    const result = await ProductService.getAllUserProduct(req.query, userID);
+
+    sendResponse(res, {
+        statusCode: StatusCodes.OK,
+        success: true,
+        message: "User's products retrieved successfully",
+        meta: result.meta,
+        data: result.result,
+    });
+});
+
 export const ProductController = {
-    createProduct, getAllProduct
+    createProduct, getAllProduct, getAllUserProductHandler
 };
