@@ -59,7 +59,36 @@ const getAllProduct = async (query: Record<string, unknown>) => {
     };
 };
 
+const getAllUserProduct = async (query: Record<string, unknown>, userID: string) => {
+    const {
+        minPrice,
+        maxPrice,
+        categories,
+        ...pQuery
+    } = query;
+
+    const productQuery = new QueryBuilder(
+        Product.find({ userID })  // Filter by userID
+            .populate('userID', 'name phoneNumber'),
+        pQuery
+    )
+        .search(['title', 'description'])
+        .filter()
+        .sort()
+        .paginate()
+        .fields()
+        .priceRange(Number(minPrice) || 0, Number(maxPrice) || Infinity);
+
+    const products = await productQuery.modelQuery.lean();
+
+    const meta = await productQuery.countTotal();
+
+    return {
+        meta,
+        result: products,
+    };
+};
 
 export const ProductService = {
-    createProduct, getAllProduct
+    createProduct, getAllProduct, getAllUserProduct
 }
