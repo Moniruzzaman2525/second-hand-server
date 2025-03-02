@@ -135,15 +135,26 @@ const changesPassword = async ( payload: Partial<TUser>, authUser: IJwtPayload) 
     if (!isMatch) {
         throw new Error('Old password is incorrect');
     }
-    await user.save();
     user.password = payload.newPassword ?? "";
     await user.save();
-    return { success: true, message: 'Password changed successfully' };
+    return user
+}
+const updateProfile = async ( payload: Partial<TUser>, authUser: IJwtPayload) => {
+    const user = await AuthUser.findById(authUser.userId)
+    if (!user) {
+        throw new Error('User not found');
+    }
+    const updatedUser = await AuthUser.findByIdAndUpdate(
+        authUser.userId,
+        { payload },
+        { new: true, runValidators: true }
+    );
+    return updatedUser
 }
 
 export const authUserServices = {
     createUserIntoDB,
     loginUserServices,
     refreshToken,
-    getMe, changesPassword
+    getMe, changesPassword, updateProfile
 }

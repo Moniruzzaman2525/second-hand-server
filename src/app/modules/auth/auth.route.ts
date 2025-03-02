@@ -13,6 +13,7 @@ router.post('/changes-password', auth(UserRole.USER, UserRole.ADMIN), validateRe
 router.post('/login', validateRequest(userValidation.userValidationLoginSchema), userControllers.loginUserController)
 router.post('/refresh-token', validateRequest(userValidation.refreshTokenValidationSchema), userControllers.refreshToken)
 router.get('/get-me', auth(UserRole.USER, UserRole.ADMIN), userControllers.getMe);
+router.patch('/update-profile', auth(UserRole.USER, UserRole.ADMIN), userControllers.updateProfile);
 
 
 export const UserRoute = router

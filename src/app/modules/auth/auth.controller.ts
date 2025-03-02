@@ -83,7 +83,21 @@ const changesPassword = catchAsync(async (req, res) => {
     sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
-        message: 'User is password changes successFully',
+        message: 'Password changes successFully',
+        data: result,
+    });
+});
+const updateProfile = catchAsync(async (req, res) => {
+    const { user, body: payload} = req;
+    const result = await authUserServices.updateProfile(
+           payload,
+           user as IJwtPayload
+       );
+
+    sendResponse(res, {
+        statusCode: StatusCodes.OK,
+        success: true,
+        message: 'Profile updated successFully',
         data: result,
     });
 });
@@ -92,5 +106,6 @@ export const userControllers = {
     loginUserController,
     refreshToken,
     getMe,
-    changesPassword
+    changesPassword,
+    updateProfile
 }
