@@ -25,7 +25,9 @@ const createUserIntoDB = async (payload: TUser) => {
         const userObj = newUser[0].toObject()
         const jwtPayload = {
             email: userObj.email,
-            role: userObj.role as string
+            name: userObj.name,
+            role: userObj.role as string,
+            userId: userObj._id,
         };
 
         const accessToken = createToken(
@@ -66,15 +68,17 @@ const loginUserServices = async (payload: TUserLogin) => {
     if (isBlocked) {
         throw new AppError(403, 'This user is blocked !')
     }
-
-    // create token and sent to the user
-    const jwtPaylod = {
+    console.log(user)
+    const jwtPayload = {
         email: user.email,
-        role: user.role as string
-    }
+        name: user.name,
+        role: user.role as string,
+        userId: user._id,
+    };
 
-    const accessToken = createToken(jwtPaylod, config.jwt_access_secret as string, config.jwt_access_expires_in as string)
-    const refreshToken = createToken(jwtPaylod, config.jwt_refresh_secret as string, config.jwt_refresh_expires_in as string)
+    console.log(jwtPayload)
+    const accessToken = createToken(jwtPayload, config.jwt_access_secret as string, config.jwt_access_expires_in as string)
+    const refreshToken = createToken(jwtPayload, config.jwt_refresh_secret as string, config.jwt_refresh_expires_in as string)
 
     return { accessToken, refreshToken }
 
@@ -90,17 +94,18 @@ const refreshToken = async (token: string) => {
 
     if (!user) {
         throw new AppError(404, 'This user is not found !');
-      }
+    }
 
-      if (user?.isBlocked) {
+    if (user?.isBlocked) {
         throw new AppError(401, 'This user is blocked !');
-      }
+    }
 
     const jwtPayload = {
         email: user.email,
+        name: user.name,
         role: user.role as string,
+        userId: user._id,
     };
-
     const accessToken = createToken(
         jwtPayload,
         config.jwt_access_secret as string,

@@ -7,7 +7,7 @@ export interface TProduct {
     price: number;
     condition: 'new' | 'used';
     images: string[];
-    userID: Types.ObjectId;
+    userID: string;
     status?: 'available' | 'sold';
     category: 'electronics' | 'fashion' | 'for kids' | 'gadget accessories' | 'health & beauty' | 'hobbies sports' | 'home appliance' | 'laptop pc' | 'mobile' | 'video game consoles' | 'others' | 'vehicles' | 'services';
 }
