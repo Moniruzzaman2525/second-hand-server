@@ -70,9 +70,21 @@ const getMe = catchAsync(async (req, res) => {
         data: result,
     });
 });
+const changesPassword = catchAsync(async (req, res) => {
+    const { userId, role } = req.user;
+    const result = await authUserServices.getMe(userId, role);
+
+    sendResponse(res, {
+        statusCode: StatusCodes.OK,
+        success: true,
+        message: 'User is password changes successFully',
+        data: result,
+    });
+});
 export const userControllers = {
     createUserController,
     loginUserController,
     refreshToken,
-    getMe
+    getMe,
+    changesPassword
 }

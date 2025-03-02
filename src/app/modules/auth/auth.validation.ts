@@ -33,6 +33,16 @@ const userValidationLoginSchema = z.object({
     })
   })
 })
+const changesPasswordSchema = z.object({
+  body: z.object({
+    newPassword: z.string({
+      required_error: 'New Password is required'
+    }),
+    oldPassword: z.string({
+      required_error: 'Old Password is required'
+    })
+  })
+})
 
 
 // refresh token validation schema
@@ -48,5 +58,6 @@ const refreshTokenValidationSchema = z.object({
 export const userValidation = {
   userValidationSchema,
   userValidationLoginSchema,
-  refreshTokenValidationSchema
+  refreshTokenValidationSchema,
+  changesPasswordSchema
 };
