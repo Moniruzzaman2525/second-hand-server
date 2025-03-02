@@ -30,7 +30,7 @@ const auth = (...requiredRoles: TUserRole[]) => {
       throw new AppError(404, 'This user is not found !');
     }
 
-    if (user?.isBlocked) {
+    if (user?.ban) {
       throw new AppError(401, 'This user is blocked!');
     }
 

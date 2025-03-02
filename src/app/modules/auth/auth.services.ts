@@ -65,8 +65,8 @@ const loginUserServices = async (payload: TUserLogin) => {
         throw new AppError(403, 'Invalid credentials')
     }
 
-    const isBlocked = user.isBlocked
-    if (isBlocked) {
+    const ban = user.ban
+    if (ban) {
         throw new AppError(403, 'This user is blocked !')
     }
     const jwtPayload = {
@@ -95,7 +95,7 @@ const refreshToken = async (token: string) => {
         throw new AppError(404, 'This user is not found !');
     }
 
-    if (user?.isBlocked) {
+    if (user?.ban) {
         throw new AppError(401, 'This user is blocked !');
     }
 
@@ -152,7 +152,7 @@ const updateProfile = async (payload: Partial<TUser>, authUser: IJwtPayload) => 
 
     const updatedUser = await AuthUser.findByIdAndUpdate(
         authUser.userId,
-        { $set: payload }, 
+        { $set: payload },
         { new: true, runValidators: true }
     );
 

@@ -15,7 +15,7 @@ const adminBlockUserFromDB = async (id: string) => {
         }
         const blockUser = await AuthUser.findByIdAndUpdate(
             id,
-            { isBlocked: true },
+            { ban: true },
             { new: true, session },
         )
 

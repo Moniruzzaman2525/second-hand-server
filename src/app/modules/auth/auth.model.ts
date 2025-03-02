@@ -42,7 +42,7 @@ const userSchema = new Schema<TUser, UserModel>({
         enum: ['admin', 'user'],
         default: 'user'
     },
-    isBlocked: {
+    ban: {
         type: Boolean,
         default: false
     }

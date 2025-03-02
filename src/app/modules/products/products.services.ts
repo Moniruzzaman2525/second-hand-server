@@ -110,7 +110,7 @@ const updateProduct = async (
 
     const user = await AuthUser.findById(authUser.userId);
 
-    if (user?.isBlocked) {
+    if (user?.ban) {
         throw new AppError(StatusCodes.BAD_REQUEST, 'User is not active');
     }
     const product = await Product.findById(productId);
