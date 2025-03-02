@@ -31,7 +31,7 @@ const auth = (...requiredRoles: TUserRole[]) => {
     }
 
     if (user?.isBlocked) {
-      throw new AppError(401, 'This user is blocked !');
+      throw new AppError(401, 'This user is blocked!');
     }
 
     // checking role

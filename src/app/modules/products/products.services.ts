@@ -101,18 +101,18 @@ const getSingleProduct = async (productId: string) => {
 };
 
 
-const deleteProduct = async (productId: string, authUser: IJwtPayload) => {
-    const user = await AuthUser.findById(authUser.userId);
-    const product = await Product.findById(productId);
+const deleteProduct = async (productId: string) => {
 
-    if (!user?.isBlocked) {
-        throw new AppError(StatusCodes.BAD_REQUEST, 'User is not active');
-    }
+    const product = await Product.findById(productId);
     if (!product) {
         throw new AppError(StatusCodes.NOT_FOUND, 'Product Not Found');
     }
 
-    return await Product.findByIdAndDelete(productId);
+    const deletedProduct = await Product.findByIdAndDelete(productId);
+    if (!deletedProduct) {
+        throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR, 'Failed to delete product');
+    }
+    return deletedProduct;
 };
 
 export const ProductService = {

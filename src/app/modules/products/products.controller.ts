@@ -60,19 +60,17 @@ const getSingleProduct = catchAsync(async (req, res) => {
 
 const deleteProduct = catchAsync(async (req, res) => {
     const {
-        user,
         params: { productId },
     } = req;
 
     const result = await ProductService.deleteProduct(
-        productId,
-        user as IJwtPayload
+        productId
     );
 
     sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
-        message: "Product deleted successfully",
+        message: "Product deleted successfully!",
         data: result,
     });
 });
