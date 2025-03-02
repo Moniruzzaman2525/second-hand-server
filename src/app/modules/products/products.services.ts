@@ -94,8 +94,6 @@ const getSingleProduct = async (productId: string) => {
     if (!product) {
         throw new AppError(StatusCodes.NOT_FOUND, 'Product not found');
     }
-
-
     return {
         product
     };

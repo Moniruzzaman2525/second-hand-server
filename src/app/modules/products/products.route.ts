@@ -21,5 +21,10 @@ router.post(
 router.get('/', ProductController.getAllProduct);
 router.get('/user-products', auth(UserRole.USER), ProductController.getAllUserProductHandler);
 router.get('/:productId', ProductController.getSingleProduct);
+router.delete(
+    '/:productId',
+    auth(UserRole.USER),
+    ProductController.deleteProduct
+);
 
 export const ProductRoutes = router;
