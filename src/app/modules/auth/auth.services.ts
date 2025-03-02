@@ -139,18 +139,26 @@ const changesPassword = async ( payload: Partial<TUser>, authUser: IJwtPayload) 
     await user.save();
     return user
 }
-const updateProfile = async ( payload: Partial<TUser>, authUser: IJwtPayload) => {
-    const user = await AuthUser.findById(authUser.userId)
+const updateProfile = async (payload: Partial<TUser>, authUser: IJwtPayload) => {
+    // Ensure user exists
+    const user = await AuthUser.findById(authUser.userId);
     if (!user) {
-        throw new Error('User not found');
+        throw new Error("User not found");
     }
+
+    if (!Object.keys(payload).length) {
+        throw new Error("No fields provided for update");
+    }
+
     const updatedUser = await AuthUser.findByIdAndUpdate(
         authUser.userId,
-        { payload },
+        { $set: payload }, 
         { new: true, runValidators: true }
     );
-    return updatedUser
-}
+
+    return updatedUser;
+};
+
 
 export const authUserServices = {
     createUserIntoDB,
