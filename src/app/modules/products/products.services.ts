@@ -100,6 +100,31 @@ const getSingleProduct = async (productId: string) => {
     };
 };
 
+const updateProduct = async (
+    productId: string,
+    payload: Partial<TProduct>,
+    productImages: IImageFiles,
+    authUser: IJwtPayload
+) => {
+    const { images } = productImages;
+
+    const user = await AuthUser.findById(authUser.userId);
+
+    if (user?.isBlocked) {
+        throw new AppError(StatusCodes.BAD_REQUEST, 'User is not active');
+    }
+    const product = await Product.findById(productId);
+    if (!product) {
+        throw new AppError(StatusCodes.NOT_FOUND, 'Product Not Found');
+    }
+
+    if (images && images.length > 0) {
+        payload.images = images.map((image) => image.path);
+    }
+
+    return await Product.findByIdAndUpdate(productId, payload, { new: true });
+};
+
 
 const deleteProduct = async (productId: string) => {
 
@@ -116,5 +141,5 @@ const deleteProduct = async (productId: string) => {
 };
 
 export const ProductService = {
-    createProduct, getAllProduct, getAllUserProduct, getSingleProduct, deleteProduct
+    createProduct, getAllProduct, getAllUserProduct, getSingleProduct, updateProduct, deleteProduct
 }
