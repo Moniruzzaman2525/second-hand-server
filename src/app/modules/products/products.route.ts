@@ -21,6 +21,14 @@ router.post(
 router.get('/', ProductController.getAllProduct);
 router.get('/user-products', auth(UserRole.USER), ProductController.getAllUserProductHandler);
 router.get('/:productId', ProductController.getSingleProduct);
+router.patch(
+    '/:productId',
+    auth(UserRole.USER),
+    multerUpload.fields([{ name: 'images' }]),
+    parseBody,
+    ProductController.updateProduct
+);
+
 router.delete(
     '/:productId',
     auth(UserRole.USER),
