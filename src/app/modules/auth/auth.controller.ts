@@ -1,6 +1,7 @@
 import config from "../../config";
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
+import { IJwtPayload } from "./auth.interface";
 import { authUserServices } from "./auth.services";
 import { StatusCodes } from "http-status-codes";
 // create user controller
@@ -60,8 +61,8 @@ const refreshToken = catchAsync(async (req, res) => {
   });
 
 const getMe = catchAsync(async (req, res) => {
-    const { userId, role } = req.user;
-    const result = await authUserServices.getMe(userId, role);
+    const { user } = req;
+    const result = await authUserServices.getMe(user as IJwtPayload);
 
     sendResponse(res, {
         statusCode: StatusCodes.OK,
@@ -70,9 +71,15 @@ const getMe = catchAsync(async (req, res) => {
         data: result,
     });
 });
+
+
 const changesPassword = catchAsync(async (req, res) => {
-    const { userId, role } = req.user;
-    const result = await authUserServices.getMe(userId, role);
+    const { user, body: payload,} = req;
+
+    const result = await authUserServices.changesPassword(
+           payload,
+           user as IJwtPayload
+       );
 
     sendResponse(res, {
         statusCode: StatusCodes.OK,

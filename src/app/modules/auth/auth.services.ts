@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { TUser, TUserLogin } from "./auth.interface";
+import { IJwtPayload, TUser, TUserLogin } from "./auth.interface";
 import { AuthUser } from "./auth.model";
 import AppError from "../../error/AppError";
 import jwt, { JwtPayload } from 'jsonwebtoken';
@@ -118,17 +118,27 @@ const refreshToken = async (token: string) => {
     };
 };
 
-const getMe = async (userId: string, role: string) => {
-    const result = await AuthUser.findById(userId)
+const getMe = async (authUser: IJwtPayload) => {
+    const result = await AuthUser.findById(authUser.userId)
     if (!result) {
         throw new AppError(StatusCodes.NOT_FOUND, 'User Not Found');
     }
     return result;
 };
 
+
+const changesPassword = async ( payload: Partial<TUser>, authUser: IJwtPayload) => {
+
+
+    const user = await AuthUser.findById(authUser.userId);
+    if (!user) {
+        throw new Error('User not found');
+    }
+}
+
 export const authUserServices = {
     createUserIntoDB,
     loginUserServices,
     refreshToken,
-    getMe
+    getMe, changesPassword
 }
