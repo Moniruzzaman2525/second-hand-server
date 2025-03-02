@@ -24,7 +24,7 @@ const productSchema = new Schema<TProduct>({
         required: [true, 'At least one image is required']
     },
     userID: {
-        type: Schema.Types.ObjectId,
+        type: String,
         ref: 'User',
         required: [true, 'Seller ID is required']
     },
@@ -32,6 +32,25 @@ const productSchema = new Schema<TProduct>({
         type: String,
         enum: ['available', 'sold'],
         default: 'available'
+    },
+    category: {
+        type: String,
+        enum: [
+            'electronics',
+            'fashion',
+            'for kids',
+            'gadget accessories',
+            'health & beauty',
+            'hobbies sports',
+            'home appliance',
+            'laptop pc',
+            'mobile',
+            'video game consoles',
+            'others',
+            'vehicles',
+            'services'
+        ],
+        required: [true, 'Category is required']
     }
 }, {
     timestamps: true,
