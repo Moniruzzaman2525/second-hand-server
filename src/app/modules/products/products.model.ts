@@ -23,6 +23,14 @@ const productSchema = new Schema<TProduct>({
         type: [String],
         required: [true, 'At least one image is required']
     },
+    address: {
+        type: String,
+        required: [true, 'Address is required']
+    },
+    location: {
+        type: String,
+        required: [true, 'City image is required']
+    },
     userID: {
         type: String,
         ref: 'User',
