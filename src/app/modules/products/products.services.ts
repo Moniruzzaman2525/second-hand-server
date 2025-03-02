@@ -68,7 +68,7 @@ const getAllUserProduct = async (query: Record<string, unknown>, userID: string)
     } = query;
 
     const productQuery = new QueryBuilder(
-        Product.find({ userID })  // Filter by userID
+        Product.find({ userID }) 
             .populate('userID', 'name phoneNumber'),
         pQuery
     )

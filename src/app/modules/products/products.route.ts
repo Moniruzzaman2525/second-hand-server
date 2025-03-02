@@ -19,5 +19,6 @@ router.post(
 );
 
 router.get('/', ProductController.getAllProduct);
+router.get('/user-products', auth(UserRole.USER), ProductController.getAllUserProductHandler);
 
 export const ProductRoutes = router;
