@@ -12,6 +12,21 @@ const userSchema = new Schema<TUser, UserModel>({
         type: String,
         required: [true, 'Phone Number is required']
     },
+    description: {
+        type: String,
+    },
+    location: {
+        type: String,
+    },
+    address: {
+        type: String,
+    },
+    facebook: {
+        type: String,
+    },
+    twitter: {
+        type: String,
+    },
     email: {
         type: String,
         required: [true, 'Email is required'],
