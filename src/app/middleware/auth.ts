@@ -10,13 +10,10 @@ import { AuthUser } from "../modules/auth/auth.model";
 const auth = (...requiredRoles: TUserRole[]) => {
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization;
-
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       throw new AppError(401, 'You are not authorized!');
     }
-    
     const token = authHeader.split(' ')[1];
-    
 
     // if the token is send from client
     if (!token) {
@@ -37,7 +34,7 @@ const auth = (...requiredRoles: TUserRole[]) => {
       throw new AppError(401, 'This user is blocked !');
     }
 
-    // checking role 
+    // checking role
     if (requiredRoles && !requiredRoles.includes(role)) {
       throw new AppError(401, 'You are not authorized !')
     }
