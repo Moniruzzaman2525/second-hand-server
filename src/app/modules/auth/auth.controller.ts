@@ -1,9 +1,8 @@
 import config from "../../config";
-import AppError from "../../error/AppError";
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import { authUserServices } from "./auth.services";
-
+import { StatusCodes } from "http-status-codes";
 // create user controller
 const createUserController = catchAsync(async (req, res) => {
     const userData = req.body
@@ -39,7 +38,7 @@ const loginUserController = catchAsync(async (req, res) => {
 
     sendResponse(res, {
         success: true,
-        statusCode: 200,
+        statusCode: StatusCodes.OK,
         message: 'Login successful',
         data: {
             token: accessToken
@@ -53,15 +52,27 @@ const refreshToken = catchAsync(async (req, res) => {
     const result = await authUserServices.refreshToken(refreshToken);
 
     sendResponse(res, {
-      statusCode: 200,
+        statusCode: StatusCodes.OK,
       success: true,
-      message: 'Access token is retrieved succesfully!',
+        message: 'Access token is retrieved successFully!',
       data: result,
     });
   });
 
+const getMe = catchAsync(async (req, res) => {
+    const { userId, role } = req.user;
+    const result = await authUserServices.getMe(userId, role);
+
+    sendResponse(res, {
+        statusCode: StatusCodes.OK,
+        success: true,
+        message: 'User is retrieved successFully',
+        data: result,
+    });
+});
 export const userControllers = {
     createUserController,
     loginUserController,
-    refreshToken
+    refreshToken,
+    getMe
 }

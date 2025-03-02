@@ -5,6 +5,7 @@ import AppError from "../../error/AppError";
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import config from "../../config";
 import { createToken } from "./auth.utils";
+import { StatusCodes } from "http-status-codes";
 
 
 const createUserIntoDB = async (payload: TUser) => {
@@ -117,9 +118,17 @@ const refreshToken = async (token: string) => {
     };
 };
 
+const getMe = async (userId: string, role: string) => {
+    const result = await AuthUser.findById(userId)
+    if (!result) {
+        throw new AppError(StatusCodes.NOT_FOUND, 'User Not Found');
+    }
+    return result;
+};
 
 export const authUserServices = {
     createUserIntoDB,
     loginUserServices,
-    refreshToken
+    refreshToken,
+    getMe
 }
