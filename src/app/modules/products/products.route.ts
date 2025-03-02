@@ -20,5 +20,6 @@ router.post(
 
 router.get('/', ProductController.getAllProduct);
 router.get('/user-products', auth(UserRole.USER), ProductController.getAllUserProductHandler);
+router.get('/:productId', ProductController.getSingleProduct);
 
 export const ProductRoutes = router;
