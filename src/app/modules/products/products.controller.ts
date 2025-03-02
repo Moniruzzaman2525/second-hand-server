@@ -32,7 +32,7 @@ const getAllProduct = catchAsync(async (req, res) => {
 });
 
 const getAllUserProductHandler = catchAsync(async (req, res) => {
-    const userID = req.user._id;
+    const userID = req.user.userId;
     const result = await ProductService.getAllUserProduct(req.query, userID);
 
     sendResponse(res, {
