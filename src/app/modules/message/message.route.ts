@@ -8,5 +8,6 @@ const router = Router();
 
 router.get('/', auth(UserRole.USER || UserRole.ADMIN), messageController.getAllMessage);
 router.post('/', auth(UserRole.USER || UserRole.ADMIN), messageController.sendMessage);
+router.get('/:userId', auth(UserRole.USER || UserRole.ADMIN), messageController.getUserMessage);
 
 export const MessageRoute = router;

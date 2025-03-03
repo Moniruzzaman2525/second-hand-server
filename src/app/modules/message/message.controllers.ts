@@ -4,6 +4,7 @@ import { IJwtPayload } from "../auth/auth.interface";
 import sendResponse from "../../utils/sendResponse";
 import { StatusCodes } from "http-status-codes";
 import { messageServices } from "./message.services";
+import { Types } from "mongoose";
 
 
 const sendMessage = catchAsync(async (req: Request, res: Response) => {
@@ -30,8 +31,19 @@ const getAllMessage = catchAsync(async (req: Request, res: Response) => {
         data: result,
     });
 });
+const getUserMessage = catchAsync(async (req: Request, res: Response) => {
+    const result = await messageServices.getUserMessages(req.user as IJwtPayload, req.params.userId as string);
+
+    sendResponse(res, {
+        statusCode: StatusCodes.OK,
+        success: true,
+        message: "Messages retrieved successfully",
+        data: result,
+    });
+});
 
 export const messageController = {
     sendMessage,
     getAllMessage,
+    getUserMessage
 };
