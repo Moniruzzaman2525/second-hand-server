@@ -1,3 +1,4 @@
+import { StatusCodes } from "http-status-codes"
 import AppError from "../../error/AppError"
 import catchAsync from "../../utils/catchAsync"
 import sendResponse from "../../utils/sendResponse"
@@ -12,10 +13,11 @@ const userBlockController = catchAsync(async (req, res) => {
         throw new AppError(404, 'User not found !');
     }
     sendResponse(res, {
+        statusCode: StatusCodes.OK,
         success: true,
-        statusCode: 200,
-        message: 'User blocked successfully',
-    })
+        message: "Products are retrieved successfully",
+        data: result,
+    });
 
 })
 
