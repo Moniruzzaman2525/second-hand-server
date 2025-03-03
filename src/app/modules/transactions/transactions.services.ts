@@ -25,7 +25,7 @@ const getUserBuyerTransactions = async (userId: JwtPayload) => {
             $or: [
                 { buyerID: userId },
             ]
-        });
+        }).populate('sellerID');
         return transactions;
     } catch (error) {
 
@@ -38,7 +38,7 @@ const getUserSellerIdTransactions = async (userId: JwtPayload) => {
             $or: [
                 { sellerID: userId },
             ]
-        });
+        }).populate('buyerID');
         return transactions;
     } catch (error) {
 
