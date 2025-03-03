@@ -19,8 +19,36 @@ const createNewTransaction = async ({ authUser, sellerID, itemID }: { authUser: 
     return result;
 };
 
+const getUserBuyerTransactions = async (userId: string) => {
+    try {
+        const transactions = await Transaction.find({
+            $or: [
+                { buyerID: userId },
+            ]
+        });
+        return transactions;
+    } catch (error) {
+
+        throw new AppError(500, 'An error occurred while fetching transactions.');
+    }
+};
+const getUserSellerIdTransactions = async (userId: string) => {
+    try {
+        const transactions = await Transaction.find({
+            $or: [
+                { sellerID: userId },
+            ]
+        });
+        return transactions;
+    } catch (error) {
+
+        throw new AppError(500, 'An error occurred while fetching transactions.');
+    }
+};
 
 
 export const transactionServices = {
-    createNewTransaction
+    createNewTransaction,
+    getUserSellerIdTransactions,
+    getUserBuyerTransactions
 }
