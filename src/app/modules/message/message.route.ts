@@ -10,4 +10,4 @@ router.get('/', auth(UserRole.USER || UserRole.ADMIN), messageController.getAllM
 router.post('/', auth(UserRole.USER || UserRole.ADMIN), messageController.sendMessage);
 router.get('/:userId', auth(UserRole.USER || UserRole.ADMIN), messageController.getUserMessage);
 
-export const MessageRoute = router;
+export const messageRoute = router;
