@@ -21,57 +21,40 @@ const createNewTransaction = async ({ authUser, sellerID, itemID }: { authUser: 
 };
 
 const getUserBuyerTransactions = async (query: Record<string, unknown>, userId: JwtPayload) => {
-    const {
-        minPrice,
-        maxPrice,
-        categories,
-        ...pQuery
-    } = query;
-
-
-    const productQuery = new QueryBuilder(
-        Transaction.find({ buyerID: userId })
-            .populate('sellerID', 'name email phoneNumber'),
-        pQuery
-    )
-        .search(['sellerID', 'description'])
+    const { ...pQuery } = query;
+    const userQuery = new QueryBuilder(Transaction.find({ buyerID: userId.userId }).populate('sellerID', 'name phoneNumber').populate('itemID', 'title price').populate('buyerID', 'name phoneNumber')
+        , pQuery)
+        .search(['name', 'email'])
         .filter()
         .sort()
         .paginate()
-        .fields()
-        .priceRange(Number(minPrice) || 0, Number(maxPrice) || Infinity);
-    const products = await productQuery.modelQuery.lean();
-    const meta = await productQuery.countTotal();
+        .fields();
+
+    const users = await userQuery.modelQuery.lean();
+    const meta = await userQuery.countTotal();
+
     return {
         meta,
-        result: products,
+        result: users,
     };
 };
+
 const getUserSellerIdTransactions = async (query: Record<string, unknown>, userId: JwtPayload) => {
-    const {
-        minPrice,
-        maxPrice,
-        categories,
-        ...pQuery
-    } = query;
-
-
-    const productQuery = new QueryBuilder(
-        Transaction.find({ sellerID: userId })
-            .populate('buyerID', 'name email phoneNumber'),
-        pQuery
-    )
-        .search(['sellerID', 'description'])
+    const { ...pQuery } = query;
+    const userQuery = new QueryBuilder(Transaction.find({ sellerID: userId.userId }).populate('sellerID', 'name phoneNumber').populate('itemID', 'title price').populate('buyerID', 'name phoneNumber')
+        , pQuery)
+        .search(['name', 'email'])
         .filter()
         .sort()
         .paginate()
-        .fields()
-        .priceRange(Number(minPrice) || 0, Number(maxPrice) || Infinity);
-    const products = await productQuery.modelQuery.lean();
-    const meta = await productQuery.countTotal();
+        .fields();
+
+    const users = await userQuery.modelQuery.lean();
+    const meta = await userQuery.countTotal();
+
     return {
         meta,
-        result: products,
+        result: users,
     };
 };
 
