@@ -1,6 +1,7 @@
 import { JwtPayload } from "jsonwebtoken";
 import { Transaction } from "./transactions.model";
 import AppError from "../../error/AppError";
+import QueryBuilder from "../../builder/QueryBuilder";
 
 
 
@@ -19,32 +20,61 @@ const createNewTransaction = async ({ authUser, sellerID, itemID }: { authUser: 
     return result;
 };
 
-const getUserBuyerTransactions = async (userId: JwtPayload) => {
-    try {
-        const transactions = await Transaction.find({
-            $or: [
-                { buyerID: userId },
-            ]
-        }).populate('sellerID');
-        return transactions;
-    } catch (error) {
+const getUserBuyerTransactions = async (query: Record<string, unknown>, userId: JwtPayload) => {
+    const {
+        minPrice,
+        maxPrice,
+        categories,
+        ...pQuery
+    } = query;
 
-        throw new AppError(500, 'An error occurred while fetching transactions.');
-    }
-};
-const getUserSellerIdTransactions = async (userId: JwtPayload) => {
-    try {
-        const transactions = await Transaction.find({
-            $or: [
-                { sellerID: userId },
-            ]
-        }).populate('buyerID');
-        return transactions;
-    } catch (error) {
 
-        throw new AppError(500, 'An error occurred while fetching transactions.');
-    }
+    const productQuery = new QueryBuilder(
+        Transaction.find({ buyerID: userId })
+            .populate('sellerID', 'name email phoneNumber'),
+        pQuery
+    )
+        .search(['sellerID', 'description'])
+        .filter()
+        .sort()
+        .paginate()
+        .fields()
+        .priceRange(Number(minPrice) || 0, Number(maxPrice) || Infinity);
+    const products = await productQuery.modelQuery.lean();
+    const meta = await productQuery.countTotal();
+    return {
+        meta,
+        result: products,
+    };
 };
+const getUserSellerIdTransactions = async (query: Record<string, unknown>, userId: JwtPayload) => {
+    const {
+        minPrice,
+        maxPrice,
+        categories,
+        ...pQuery
+    } = query;
+
+
+    const productQuery = new QueryBuilder(
+        Transaction.find({ sellerID: userId })
+            .populate('buyerID', 'name email phoneNumber'),
+        pQuery
+    )
+        .search(['sellerID', 'description'])
+        .filter()
+        .sort()
+        .paginate()
+        .fields()
+        .priceRange(Number(minPrice) || 0, Number(maxPrice) || Infinity);
+    const products = await productQuery.modelQuery.lean();
+    const meta = await productQuery.countTotal();
+    return {
+        meta,
+        result: products,
+    };
+};
+
 
 
 export const transactionServices = {
