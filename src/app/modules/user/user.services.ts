@@ -2,35 +2,24 @@ import QueryBuilder from "../../builder/QueryBuilder";
 import { AuthUser } from "../auth/auth.model";
 
 const getAllUser = async (query: Record<string, unknown>) => {
-    const {
-        minPrice,
-        maxPrice,
-        categories,
-        ...pQuery
-    } = query;
+    const {...pQuery } = query;
 
-
-    const productQuery = new QueryBuilder(
-        AuthUser.find(),
-        pQuery
-    )
-        .search(['name', 'location'])
+    const userQuery = new QueryBuilder(AuthUser.find(), pQuery)
+        .search(['name', 'email'])
         .filter()
         .sort()
         .paginate()
-        .fields()
-        .priceRange(Number(minPrice) || 0, Number(maxPrice) || Infinity);
+        .fields();
 
-    const users = await productQuery.modelQuery.lean();
-
-    const meta = await productQuery.countTotal();
-
+    const users = await userQuery.modelQuery.lean();
+    const meta = await userQuery.countTotal();
 
     return {
         meta,
         result: users,
     };
 };
+
 
 
 export const userServices = {
