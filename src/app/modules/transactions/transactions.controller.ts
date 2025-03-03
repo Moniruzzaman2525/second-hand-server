@@ -3,6 +3,7 @@ import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import { IJwtPayload } from "../auth/auth.interface";
 import { Request, Response } from "express";
+import { transactionServices } from "./transactions.services";
 
 
 const createNewTransaction = catchAsync(async (req: Request, res: Response) => {
