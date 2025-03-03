@@ -18,7 +18,29 @@ const createNewTransaction = catchAsync(async (req: Request, res: Response) => {
         data: result,
     });
 });
+const getUserBuyerTransactions = catchAsync(async (req: Request, res: Response) => {
+    const result = await transactionServices.getUserBuyerTransactions(req.user as IJwtPayload);
+
+    sendResponse(res, {
+        statusCode: StatusCodes.CREATED,
+        success: true,
+        message: "Buyer transaction retrieved successfully",
+        data: result,
+    });
+});
+const getUserSellerTransactions = catchAsync(async (req: Request, res: Response) => {
+    const result = await transactionServices.getUserBuyerTransactions(req.user as IJwtPayload);
+
+    sendResponse(res, {
+        statusCode: StatusCodes.CREATED,
+        success: true,
+        message: "Seller transaction retrieved successfully",
+        data: result,
+    });
+});
 
 export const transactionsServices = {
-    createNewTransaction
+    createNewTransaction,
+    getUserBuyerTransactions,
+    getUserSellerTransactions
 }

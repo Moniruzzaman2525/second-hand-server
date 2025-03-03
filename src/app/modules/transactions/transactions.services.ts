@@ -19,7 +19,7 @@ const createNewTransaction = async ({ authUser, sellerID, itemID }: { authUser: 
     return result;
 };
 
-const getUserBuyerTransactions = async (userId: string) => {
+const getUserBuyerTransactions = async (userId: JwtPayload) => {
     try {
         const transactions = await Transaction.find({
             $or: [
@@ -32,7 +32,7 @@ const getUserBuyerTransactions = async (userId: string) => {
         throw new AppError(500, 'An error occurred while fetching transactions.');
     }
 };
-const getUserSellerIdTransactions = async (userId: string) => {
+const getUserSellerIdTransactions = async (userId: JwtPayload) => {
     try {
         const transactions = await Transaction.find({
             $or: [
