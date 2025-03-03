@@ -29,7 +29,6 @@ const createUserController = catchAsync(async (req, res) => {
 const loginUserController = catchAsync(async (req, res) => {
     const loginUserData = req.body
     const result = await authUserServices.loginUserServices(loginUserData)
-
     const { refreshToken, accessToken } = result
 
     res.cookie('refreshToken', refreshToken, {

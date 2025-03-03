@@ -90,7 +90,7 @@ const getAllUserProduct = async (query: Record<string, unknown>, userID: string)
 };
 
 const getSingleProduct = async (productId: string) => {
-    const product = await Product.findById(productId)
+    const product = await Product.findById(productId).populate('userID', 'name phoneNumber')
 
     if (!product) {
         throw new AppError(StatusCodes.NOT_FOUND, 'Product not found');
