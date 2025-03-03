@@ -7,9 +7,9 @@ import { messageServices } from "./message.services";
 
 
 const sendMessage = catchAsync(async (req: Request, res: Response) => {
-    const { receiverID, content } = req.body; 
+    const { receiverID, message } = req.body;
     const authUser = req.user as IJwtPayload;
-    const result = await messageServices.sendMessage(authUser, receiverID, content);
+    const result = await messageServices.sendMessage(authUser, receiverID, message);
 
     sendResponse(res, {
         statusCode: StatusCodes.CREATED,
@@ -22,6 +22,7 @@ const sendMessage = catchAsync(async (req: Request, res: Response) => {
 
 const getAllMessage = catchAsync(async (req: Request, res: Response) => {
     const result = await messageServices.getAllMessage(req.user as IJwtPayload);
+
     sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
