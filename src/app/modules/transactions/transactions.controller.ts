@@ -18,3 +18,6 @@ const createNewTransaction = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+export const transactionsServices = {
+    createNewTransaction
+}
