@@ -13,8 +13,25 @@ const sendMessage = async (authUser: IJwtPayload, receiverID: string, message: s
     });
 
     const savedMessage = await newMessage.save();
-    return savedMessage;
+
+    const result = await Message.find({
+        $or: [
+            { senderID: authUser.userId, receiverID: receiverID },
+            { senderID: receiverID, receiverID: authUser.userId }
+        ]
+    })
+        .populate('senderID', 'name')
+        .populate('receiverID', 'name')
+        .sort({ timestamp: 1 });
+
+    const formattedMessages = result.map(message => ({
+        sender: message.senderID._id.toString() === authUser.userId ? "you" : "other",
+        content: message,
+    }));
+
+    return formattedMessages;
 };
+
 
 
 const getAllMessage = async (authUser: IJwtPayload) => {
@@ -25,28 +42,37 @@ const getAllMessage = async (authUser: IJwtPayload) => {
         ]
     })
         .populate('senderID', 'name')
-        .populate('receiverID', 'name');
+        .populate('receiverID', 'name')
+        .sort({ timestamp: -1 });
 
 
-    const users = result.map((message: TMessagePopulated) => {
+    const userMessagesMap = new Map<string, any>();
+
+    result.forEach((message: TMessagePopulated) => {
         let otherUser: IUser;
         if (message.senderID && (message.senderID as IUser)._id.toString() !== authUser.userId.toString()) {
-
             otherUser = message.senderID as IUser;
         } else {
-
             otherUser = message.receiverID as IUser;
         }
 
-        return {
-            id: otherUser._id,
-            name: otherUser.name,
-            lastMessage: message.message,
-        };
+
+        if (!userMessagesMap.has(otherUser._id.toString())) {
+            userMessagesMap.set(otherUser._id.toString(), {
+                id: otherUser._id,
+                name: otherUser.name,
+                lastMessage: message.message,
+            });
+        }
     });
+
+
+    const users = Array.from(userMessagesMap.values());
 
     return users;
 };
+
+
 
 
 const getUserMessages = async (authUser: IJwtPayload, targetUserId: string) => {
@@ -57,28 +83,16 @@ const getUserMessages = async (authUser: IJwtPayload, targetUserId: string) => {
         ]
     })
         .populate('senderID', 'name')
-        .populate('receiverID', 'name');
+        .populate('receiverID', 'name')
+        .sort({ createdAt: 1 });
 
-    const messages = result.map((message: TMessagePopulated) => {
-        const sender = message.senderID as IUser;
-        const receiver = message.receiverID as IUser;
-        const otherUser = (sender._id.toString() !== authUser.userId.toString()) ? sender : receiver;
-        const isSender = sender._id.toString() === authUser.userId.toString();
-
-        return {
-            messageId: message._id,
-            messageContent: message.message,
-            timestamp: message.timestamp,
-            isSender: isSender,
-            otherUser: {
-                id: otherUser._id,
-                name: otherUser.name
-            }
-        };
-    });
-
-    return messages;
+    const formattedMessages = result.map(message => ({
+        sender: message.senderID._id.toString() === authUser.userId ? "you" : "other",
+        content: message,
+    }));
+    return formattedMessages;
 };
+
 
 
 export const messageServices = {
