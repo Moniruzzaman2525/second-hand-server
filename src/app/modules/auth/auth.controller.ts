@@ -101,11 +101,12 @@ const updateProfile = catchAsync(async (req, res) => {
         data: result,
     });
 });
+
 export const userControllers = {
     createUserController,
     loginUserController,
     refreshToken,
     getMe,
     changesPassword,
-    updateProfile
+    updateProfile,
 }

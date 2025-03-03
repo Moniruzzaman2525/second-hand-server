@@ -16,7 +16,7 @@ router.post('/changes-password', auth(UserRole.USER, UserRole.ADMIN), validateRe
 router.patch('/', auth(UserRole.USER, UserRole.ADMIN), userControllers.updateProfile);
 router.get('/', auth(UserRole.ADMIN), userController.getAllUser);
 router.patch('/:userId/ban', auth(USER_ROLE.admin), adminController.userBlockController)
-router.delete('/:userId/delete', auth(USER_ROLE.admin), adminController.userBlockController)
+router.delete('/:userId/delete', auth(USER_ROLE.admin), userController.deleteUser)
 
 
 export const userRoutes = router

@@ -79,24 +79,9 @@ const updateProduct = catchAsync(async (req, res) => {
     });
 });
 
-const deleteProduct = catchAsync(async (req, res) => {
-    const {
-        params: { productId },
-    } = req;
 
-    const result = await ProductService.deleteProduct(
-        productId
-    );
-
-    sendResponse(res, {
-        statusCode: StatusCodes.OK,
-        success: true,
-        message: "Product deleted successfully!",
-        data: result,
-    });
-});
 
 
 export const ProductController = {
-    createProduct, getAllProduct, getAllUserProductHandler, getSingleProduct, updateProduct, deleteProduct
+    createProduct, getAllProduct, getAllUserProductHandler, getSingleProduct, updateProduct
 };

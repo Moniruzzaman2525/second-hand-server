@@ -1,4 +1,6 @@
+import { StatusCodes } from "http-status-codes";
 import QueryBuilder from "../../builder/QueryBuilder";
+import AppError from "../../error/AppError";
 import { AuthUser } from "../auth/auth.model";
 
 const getAllUser = async (query: Record<string, unknown>) => {
@@ -19,9 +21,21 @@ const getAllUser = async (query: Record<string, unknown>) => {
         result: users,
     };
 };
+const deleteUser = async (userId: string) => {
 
+    const user = await AuthUser.findById(userId);
+    if (!user) {
+        throw new AppError(StatusCodes.NOT_FOUND, 'User Not Found');
+    }
+
+    const deletedUser = await AuthUser.findByIdAndDelete(userId);
+    if (!deletedUser) {
+        throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR, 'Failed to delete product');
+    }
+    return deletedUser;
+};
 
 
 export const userServices = {
-    getAllUser
+    getAllUser, deleteUser
 }

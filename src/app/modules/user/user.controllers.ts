@@ -14,7 +14,17 @@ const getAllUser = catchAsync(async (req, res) => {
         data: result.result,
     });
 });
+const deleteUser = catchAsync(async (req, res) => {
+    const userId = req.params.userId
+    const result = await userServices.deleteUser(userId)
 
+    sendResponse(res, {
+        statusCode: StatusCodes.OK,
+        success: true,
+        message: 'Profile updated successFully',
+        data: result,
+    });
+});
 export const userController = {
-    getAllUser
+    getAllUser, deleteUser
 }
