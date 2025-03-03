@@ -9,7 +9,7 @@ import { transactionServices } from "./transactions.services";
 const createNewTransaction = catchAsync(async (req: Request, res: Response) => {
     const { sellerID, itemID } = req.body;
     const authUser = req.user as IJwtPayload;
-    const result = await transactionServices.createNewTransaction(authUser, sellerID, itemID);
+    const result = await transactionServices.createNewTransaction({authUser, sellerID, itemID});
 
     sendResponse(res, {
         statusCode: StatusCodes.CREATED,

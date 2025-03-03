@@ -6,6 +6,6 @@ import { transactionsServices } from './transactions.controller';
 const router = Router();
 
 
-router.get('/', auth(UserRole.USER || UserRole.ADMIN), transactionsServices.createNewTransaction);
+router.post('/', auth(UserRole.USER || UserRole.ADMIN), transactionsServices.createNewTransaction);
 
 export const transactionsRoute = router;
