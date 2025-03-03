@@ -28,7 +28,7 @@ const getUserBuyerTransactions = catchAsync(async (req: Request, res: Response) 
     });
 });
 const getUserSellerTransactions = catchAsync(async (req: Request, res: Response) => {
-    const result = await transactionServices.getUserBuyerTransactions(req.query, req.user as IJwtPayload);
+    const result = await transactionServices.getUserSellerIdTransactions(req.query, req.user as IJwtPayload);
 
     sendResponse(res, {
         statusCode: StatusCodes.CREATED,

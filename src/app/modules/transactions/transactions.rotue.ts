@@ -8,6 +8,6 @@ const router = Router();
 
 router.post('/', auth(UserRole.USER || UserRole.ADMIN), transactionsServices.createNewTransaction);
 router.get('/', auth(UserRole.USER || UserRole.ADMIN), transactionsServices.getUserBuyerTransactions);
-router.post('/seller', auth(UserRole.USER || UserRole.ADMIN), transactionsServices.getUserSellerTransactions);
+router.get('/seller', auth(UserRole.USER || UserRole.ADMIN), transactionsServices.getUserSellerTransactions);
 
 export const transactionsRoute = router;

@@ -22,7 +22,7 @@ const createNewTransaction = async ({ authUser, sellerID, itemID }: { authUser: 
 
 const getUserBuyerTransactions = async (query: Record<string, unknown>, userId: JwtPayload) => {
     const { ...pQuery } = query;
-    const userQuery = new QueryBuilder(Transaction.find({ buyerID: userId.userId }).populate('sellerID', 'name phoneNumber').populate('itemID', 'title price').populate('buyerID', 'name phoneNumber')
+    const userQuery = new QueryBuilder(Transaction.find({ buyerID: userId.userId }).populate('sellerID', 'name phoneNumber').populate('itemID', 'title price category').populate('buyerID', 'name phoneNumber')
         , pQuery)
         .search(['name', 'email'])
         .filter()
@@ -41,7 +41,7 @@ const getUserBuyerTransactions = async (query: Record<string, unknown>, userId: 
 
 const getUserSellerIdTransactions = async (query: Record<string, unknown>, userId: JwtPayload) => {
     const { ...pQuery } = query;
-    const userQuery = new QueryBuilder(Transaction.find({ sellerID: userId.userId }).populate('sellerID', 'name phoneNumber').populate('itemID', 'title price').populate('buyerID', 'name phoneNumber')
+    const userQuery = new QueryBuilder(Transaction.find({ sellerID: userId.userId }).populate('sellerID', 'name phoneNumber').populate('itemID', 'title price category').populate('buyerID', 'name phoneNumber')
         , pQuery)
         .search(['name', 'email'])
         .filter()
