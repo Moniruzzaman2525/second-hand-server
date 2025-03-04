@@ -35,5 +35,6 @@ router.delete(
     auth(UserRole.USER),
     ProductController.deleteProduct
 );
+router.patch('/:userId/ban', auth(UserRole.ADMIN), ProductController.permissionProduct)
 
 export const ProductRoutes = router;

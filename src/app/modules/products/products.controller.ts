@@ -16,9 +16,10 @@ const createProduct = catchAsync(async (req: Request, res: Response) => {
     sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
-        message: "Product created successfully",
+        message: "Your advertisement has been successfully posted. Please allow some time for admin approval.",
         data: result,
     });
+
 });
 const getAllProduct = catchAsync(async (req, res) => {
     const result = await ProductService.getAllProduct(req.query);
@@ -66,6 +67,17 @@ const getSingleProduct = catchAsync(async (req, res) => {
         data: result,
     });
 });
+const permissionProduct = catchAsync(async (req, res) => {
+    const { productId } = req.params;
+    const result = await ProductService.permissionProduct(req.body,productId);
+
+    sendResponse(res, {
+        statusCode: StatusCodes.OK,
+        success: true,
+        message: `Product permission successfully`,
+        data: result,
+    });
+});
 
 const updateProduct = catchAsync(async (req, res) => {
     const {
@@ -108,5 +120,5 @@ const deleteProduct = catchAsync(async (req, res) => {
 
 
 export const ProductController = {
-    createProduct, getAllProduct, getAllUserProductHandler, getSingleProduct, updateProduct, deleteProduct, getAllProductByAdmin
+    createProduct, getAllProduct, getAllUserProductHandler, getSingleProduct, updateProduct, deleteProduct, getAllProductByAdmin, permissionProduct
 };

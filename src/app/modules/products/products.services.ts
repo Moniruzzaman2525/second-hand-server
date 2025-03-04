@@ -171,6 +171,21 @@ const deleteProduct = async (productId: string) => {
     return deletedProduct;
 };
 
+const permissionProduct = async (id: string, payload: string) => {
+    const product = await Product.findById(id)
+    if (!product) {
+        throw new AppError(StatusCodes.NOT_FOUND, 'Product are not found!')
+    }
+
+    const completePermission = await Product.findByIdAndUpdate(
+        id,
+        { payload },
+        { new: true }
+    )
+    return completePermission
+}
+
+
 export const ProductService = {
-    createProduct, getAllProduct, getAllUserProduct, getSingleProduct, updateProduct, deleteProduct, getAllProductByAdmin
+    createProduct, getAllProduct, getAllUserProduct, getSingleProduct, updateProduct, deleteProduct, getAllProductByAdmin, permissionProduct
 }
