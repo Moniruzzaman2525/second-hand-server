@@ -48,10 +48,22 @@ const getConfirmTransactions = catchAsync(async (req: Request, res: Response) =>
         data: result,
     });
 });
+const deleteTransactions = catchAsync(async (req: Request, res: Response) => {
+    const itemId = req.params.transactionId;
+    const result = await transactionServices.transactionComplete(itemId, req.user as IJwtPayload);
+
+    sendResponse(res, {
+        statusCode: StatusCodes.CREATED,
+        success: true,
+        message: "Transaction delete successfully",
+        data: result,
+    });
+});
 
 export const transactionsServices = {
     createNewTransaction,
     getUserBuyerTransactions,
     getUserSellerTransactions,
-    getConfirmTransactions
+    getConfirmTransactions,
+    deleteTransactions
 }

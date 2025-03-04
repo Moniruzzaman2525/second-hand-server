@@ -2,13 +2,14 @@ import { JwtPayload } from "jsonwebtoken";
 import { Transaction } from "./transactions.model";
 import AppError from "../../error/AppError";
 import QueryBuilder from "../../builder/QueryBuilder";
+import { StatusCodes } from "http-status-codes";
 
 
 
 const createNewTransaction = async ({ authUser, sellerID, itemID }: { authUser: JwtPayload, sellerID: string, itemID: string }) => {
     const existingTransaction = await Transaction.findOne({ buyerID: authUser.userId, sellerID, itemID });
     if (existingTransaction) {
-        throw new AppError(400 ,'You have already purchased this item from this seller');
+        throw new AppError(StatusCodes.BAD_REQUEST ,'You have already purchased this item from this seller');
     }
     const data = {
         buyerID: authUser.userId,
@@ -61,7 +62,7 @@ const getUserSellerIdTransactions = async (query: Record<string, unknown>, userI
 const transactionComplete = async (id: string, userId: JwtPayload) => {
         const transaction = await Transaction.findById(id)
         if (!transaction?.sellerID !== !userId.userId) {
-            throw new AppError(404, 'You are not authorized!')
+            throw new AppError(StatusCodes.FORBIDDEN, 'You are not authorized!')
         }
 
         const completeTransaction = await Transaction.findByIdAndUpdate(
@@ -70,12 +71,26 @@ const transactionComplete = async (id: string, userId: JwtPayload) => {
             { new: true }
         )
     return completeTransaction
-
 }
+
+const deleteTransactions = async (transactionId: string) => {
+
+    const product = await Transaction.findById(transactionId);
+    if (!product) {
+        throw new AppError(StatusCodes.NOT_FOUND, 'Product Not Found');
+    }
+
+    const deletedProduct = await Transaction.findByIdAndDelete(transactionId);
+    if (!deletedProduct) {
+        throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR, 'Failed to delete product');
+    }
+    return deletedProduct;
+};
 
 export const transactionServices = {
     createNewTransaction,
     getUserSellerIdTransactions,
     getUserBuyerTransactions,
-    transactionComplete
+    transactionComplete,
+    deleteTransactions
 }

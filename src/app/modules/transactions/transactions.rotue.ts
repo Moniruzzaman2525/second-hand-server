@@ -9,6 +9,7 @@ const router = Router();
 router.post('/', auth(UserRole.USER || UserRole.ADMIN), transactionsServices.createNewTransaction);
 router.get('/', auth(UserRole.USER || UserRole.ADMIN), transactionsServices.getUserBuyerTransactions);
 router.get('/seller', auth(UserRole.USER || UserRole.ADMIN), transactionsServices.getUserSellerTransactions);
-router.patch('/complete-sales/transactionId', auth(UserRole.USER || UserRole.ADMIN), transactionsServices.getConfirmTransactions);
+router.patch('/complete-sales/:transactionId', auth(UserRole.USER || UserRole.ADMIN), transactionsServices.getConfirmTransactions);
+router.delete('/:transactionId', auth(UserRole.USER || UserRole.ADMIN), transactionsServices.getConfirmTransactions);
 
 export const transactionsRoute = router;
