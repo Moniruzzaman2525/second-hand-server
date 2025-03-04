@@ -37,9 +37,21 @@ const getUserSellerTransactions = catchAsync(async (req: Request, res: Response)
         data: result,
     });
 });
+const getConfirmTransactions = catchAsync(async (req: Request, res: Response) => {
+    const { itemID } = req.body;
+    const result = await transactionServices.getUserSellerIdTransactions(itemID, req.user as IJwtPayload);
+
+    sendResponse(res, {
+        statusCode: StatusCodes.CREATED,
+        success: true,
+        message: "Sell complete retrieved successfully",
+        data: result,
+    });
+});
 
 export const transactionsServices = {
     createNewTransaction,
     getUserBuyerTransactions,
-    getUserSellerTransactions
+    getUserSellerTransactions,
+    getConfirmTransactions
 }
