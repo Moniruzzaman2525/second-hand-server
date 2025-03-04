@@ -41,6 +41,11 @@ const productSchema = new Schema<TProduct>({
         enum: ['available', 'sold'],
         default: 'available'
     },
+    permission: {
+        type: String,
+        enum: ['pending', 'complete', 'reject'],
+        default: 'pending'
+    },
     category: {
         type: String,
         enum: [

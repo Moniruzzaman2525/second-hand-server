@@ -30,6 +30,16 @@ const getAllProduct = catchAsync(async (req, res) => {
         data: result.result,
     });
 });
+const getAllProductByAdmin = catchAsync(async (req, res) => {
+    const result = await ProductService.getAllProductByAdmin(req.query);
+    sendResponse(res, {
+        statusCode: StatusCodes.OK,
+        success: true,
+        message: "Products are retrieved successfully",
+        meta: result.meta,
+        data: result.result,
+    });
+});
 
 const getAllUserProductHandler = catchAsync(async (req, res) => {
     const userID = req.user.userId;
@@ -98,5 +108,5 @@ const deleteProduct = catchAsync(async (req, res) => {
 
 
 export const ProductController = {
-    createProduct, getAllProduct, getAllUserProductHandler, getSingleProduct, updateProduct, deleteProduct
+    createProduct, getAllProduct, getAllUserProductHandler, getSingleProduct, updateProduct, deleteProduct, getAllProductByAdmin
 };

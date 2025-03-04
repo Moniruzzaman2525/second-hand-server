@@ -17,6 +17,7 @@ router.patch('/', auth(UserRole.USER, UserRole.ADMIN), userControllers.updatePro
 router.get('/', auth(UserRole.ADMIN), userController.getAllUser);
 router.patch('/:userId/ban', auth(USER_ROLE.admin), adminController.userBlockController)
 router.delete('/:userId/delete', auth(USER_ROLE.admin), userController.deleteUser)
+router.get('/get-me', auth(UserRole.USER, UserRole.ADMIN), userControllers.getMe);
 
 
 export const userRoutes = router

@@ -19,6 +19,7 @@ router.post(
 );
 
 router.get('/', ProductController.getAllProduct);
+router.get('/by-admin', auth(UserRole.ADMIN), ProductController.getAllProductByAdmin);
 router.get('/user-products', auth(UserRole.USER), ProductController.getAllUserProductHandler);
 router.get('/:productId', ProductController.getSingleProduct);
 router.patch(

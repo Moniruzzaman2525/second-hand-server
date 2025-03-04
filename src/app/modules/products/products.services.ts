@@ -36,7 +36,36 @@ const getAllProduct = async (query: Record<string, unknown>) => {
         ...pQuery
     } = query;
 
+    const productQuery = new QueryBuilder(
+        Product.find({ permission: { $nin: ['pending', 'reject'] } })
+            .populate('userID', 'name phoneNumber'),
+        pQuery
+    )
+        .search(['title', 'description'])
+        .filter()
+        .sort()
+        .paginate()
+        .fields()
+        .priceRange(Number(minPrice) || 0, Number(maxPrice) || Infinity);
 
+    const products = await productQuery.modelQuery.lean();
+
+    const meta = await productQuery.countTotal();
+
+    return {
+        meta,
+        result: products,
+    };
+};
+
+
+const getAllProductByAdmin = async (query: Record<string, unknown>) => {
+    const {
+        minPrice,
+        maxPrice,
+        categories,
+        ...pQuery
+    } = query;
     const productQuery = new QueryBuilder(
         Product.find()
             .populate('userID', 'name phoneNumber'),
@@ -59,6 +88,8 @@ const getAllProduct = async (query: Record<string, unknown>) => {
         result: products,
     };
 };
+
+
 
 const getAllUserProduct = async (query: Record<string, unknown>, userID: string) => {
     const {
@@ -141,5 +172,5 @@ const deleteProduct = async (productId: string) => {
 };
 
 export const ProductService = {
-    createProduct, getAllProduct, getAllUserProduct, getSingleProduct, updateProduct, deleteProduct
+    createProduct, getAllProduct, getAllUserProduct, getSingleProduct, updateProduct, deleteProduct, getAllProductByAdmin
 }
