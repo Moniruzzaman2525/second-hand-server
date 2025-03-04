@@ -50,7 +50,7 @@ const getConfirmTransactions = catchAsync(async (req: Request, res: Response) =>
 });
 const deleteTransactions = catchAsync(async (req: Request, res: Response) => {
     const itemId = req.params.transactionId;
-    const result = await transactionServices.transactionComplete(itemId, req.user as IJwtPayload);
+    const result = await transactionServices.deleteTransactions(itemId);
 
     sendResponse(res, {
         statusCode: StatusCodes.CREATED,
