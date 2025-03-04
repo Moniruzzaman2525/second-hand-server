@@ -6,6 +6,7 @@ import AppError from '../../error/AppError';
 import { Product } from './products.model';
 import QueryBuilder from '../../builder/QueryBuilder';
 import { AuthUser } from '../auth/auth.model';
+import { Types } from 'mongoose';
 
 const createProduct = async (
     productData: Partial<TProduct>,
@@ -139,12 +140,14 @@ const updateProduct = async (
 ) => {
     const { images } = productImages;
 
+
     const user = await AuthUser.findById(authUser.userId);
 
     if (user?.ban) {
         throw new AppError(StatusCodes.BAD_REQUEST, 'User is not active');
     }
     const product = await Product.findById(productId);
+
     if (!product) {
         throw new AppError(StatusCodes.NOT_FOUND, 'Product Not Found');
     }
@@ -171,19 +174,20 @@ const deleteProduct = async (productId: string) => {
     return deletedProduct;
 };
 
-const permissionProduct = async (id: string, payload: string) => {
-    const product = await Product.findById(id)
-    if (!product) {
-        throw new AppError(StatusCodes.NOT_FOUND, 'Product are not found!')
-    }
+const permissionProduct = async (productId: string, payload: { permission: string }) => {
 
+    const product = await Product.findById(productId);
+    if (!product) {
+        throw new AppError(StatusCodes.NOT_FOUND, 'Product not found!');
+    }
     const completePermission = await Product.findByIdAndUpdate(
-        id,
-        { payload },
+        productId,
+        { permission: payload.permission },
         { new: true }
-    )
-    return completePermission
-}
+    );
+    return completePermission;
+};
+
 
 
 export const ProductService = {

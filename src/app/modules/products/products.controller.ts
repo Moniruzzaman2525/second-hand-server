@@ -68,9 +68,9 @@ const getSingleProduct = catchAsync(async (req, res) => {
     });
 });
 const permissionProduct = catchAsync(async (req, res) => {
-    const { productId } = req.params;
+    const productId = req.params.productId
     const { action } = req.body;
-    const result = await ProductService.permissionProduct(req.body, productId);
+    const result = await ProductService.permissionProduct(productId,req.body);
 
     let message = '';
 
