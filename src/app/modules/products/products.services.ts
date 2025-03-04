@@ -7,6 +7,8 @@ import { Product } from './products.model';
 import QueryBuilder from '../../builder/QueryBuilder';
 import { AuthUser } from '../auth/auth.model';
 import { Types } from 'mongoose';
+import { JwtPayload } from 'jsonwebtoken';
+import { Wishlist } from '../wishlist/wishlist.model';
 
 const createProduct = async (
     productData: Partial<TProduct>,
@@ -29,7 +31,9 @@ const createProduct = async (
     return result;
 };
 
-const getAllProduct = async (query: Record<string, unknown>) => {
+
+
+const getAllProduct = async (query: Record<string, unknown>, authUser: JwtPayload) => {
     const {
         minPrice,
         maxPrice,
@@ -48,9 +52,14 @@ const getAllProduct = async (query: Record<string, unknown>) => {
         .paginate()
         .fields()
         .priceRange(Number(minPrice) || 0, Number(maxPrice) || Infinity);
-
-    const products = await productQuery.modelQuery.lean();
-
+        const products = await productQuery.modelQuery.lean();
+        if (authUser) {
+            const wishlist = await Wishlist.find({ userId: authUser.userId }).lean();
+            const wishlistProductIds = new Set(wishlist.map((item) => item.productId.toString()));
+            products.forEach((product: any) => {
+                product.wishlist = wishlistProductIds.has(product._id.toString());
+            });
+        }
     const meta = await productQuery.countTotal();
 
     return {
@@ -58,6 +67,7 @@ const getAllProduct = async (query: Record<string, unknown>) => {
         result: products,
     };
 };
+
 
 
 const getAllProductByAdmin = async (query: Record<string, unknown>) => {

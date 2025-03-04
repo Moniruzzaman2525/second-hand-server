@@ -22,7 +22,9 @@ const createProduct = catchAsync(async (req: Request, res: Response) => {
 
 });
 const getAllProduct = catchAsync(async (req, res) => {
-    const result = await ProductService.getAllProduct(req.query);
+    const authUser = req.user as IJwtPayload;
+    const query = req.query
+    const result = await ProductService.getAllProduct(query, authUser);
     sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,

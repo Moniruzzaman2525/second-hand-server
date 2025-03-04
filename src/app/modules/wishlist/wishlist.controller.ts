@@ -14,7 +14,7 @@ const addWishlist = catchAsync(async (req: Request, res: Response) => {
     sendResponse(res, {
         statusCode: StatusCodes.CREATED,
         success: true,
-        message: "Message sent successfully",
+        message: "Wishlist add successfully",
         data: result,
     });
 });

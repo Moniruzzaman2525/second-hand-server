@@ -7,7 +7,7 @@ import { Product } from "../products/products.model";
 
 const addWishlist = async ({ authUser, itemID }: { authUser: JwtPayload, itemID: string }) => {
     const product = await Product.findById(itemID);
-    if (product) {
+    if (!product) {
         throw new AppError(StatusCodes.BAD_REQUEST, 'This product not available');
     }
     const data = {
