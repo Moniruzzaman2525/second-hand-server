@@ -58,10 +58,24 @@ const getUserSellerIdTransactions = async (query: Record<string, unknown>, userI
     };
 };
 
+const transactionComplete = async (id: string, userId: JwtPayload) => {
+        const transaction = await Transaction.findById(id)
+        if (!transaction?.sellerID !== !userId.userId) {
+            throw new AppError(404, 'You are not authorized!')
+        }
 
+        const completeTransaction = await Transaction.findByIdAndUpdate(
+            id,
+            { status: 'completed' },
+            { new: true }
+        )
+    return completeTransaction
+
+}
 
 export const transactionServices = {
     createNewTransaction,
     getUserSellerIdTransactions,
-    getUserBuyerTransactions
+    getUserBuyerTransactions,
+    transactionComplete
 }
