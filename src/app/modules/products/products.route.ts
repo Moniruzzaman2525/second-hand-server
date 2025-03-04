@@ -6,6 +6,7 @@ import { multerUpload } from '../../config/multer.config';
 import { parseBody } from '../../middleware/bodyParser';
 import validateRequest from '../../middleware/validateRequest';
 import { productValidation } from './products.validation';
+import alowAuth from '../../middleware/alowAuth';
 
 const router = Router();
 
@@ -18,7 +19,7 @@ router.post(
     ProductController.createProduct
 );
 
-router.get('/', ProductController.getAllProduct);
+router.get('/', alowAuth(UserRole.USER, UserRole.ADMIN), ProductController.getAllProduct);
 router.get('/by-admin', auth(UserRole.ADMIN), ProductController.getAllProductByAdmin);
 router.get('/user-products', auth(UserRole.USER), ProductController.getAllUserProductHandler);
 router.get('/:productId', ProductController.getSingleProduct);
