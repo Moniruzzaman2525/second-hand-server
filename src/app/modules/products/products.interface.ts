@@ -11,6 +11,6 @@ export interface TProduct {
     location: string;
     address: string;
     status?: 'available' | 'sold';
-    permission?: 'pending' | 'complete' | 'reject';
+    permission?: 'pending' | 'accepted' | 'reject';
     category: 'electronics' | 'fashion' | 'for kids' | 'gadget accessories' | 'health & beauty' | 'hobbies sports' | 'home appliance' | 'laptop pc' | 'mobile' | 'video game consoles' | 'others' | 'vehicles' | 'services';
 }

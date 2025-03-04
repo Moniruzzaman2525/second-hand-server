@@ -69,15 +69,27 @@ const getSingleProduct = catchAsync(async (req, res) => {
 });
 const permissionProduct = catchAsync(async (req, res) => {
     const { productId } = req.params;
-    const result = await ProductService.permissionProduct(req.body,productId);
+    const { action } = req.body;
+    const result = await ProductService.permissionProduct(req.body, productId);
+
+    let message = '';
+
+    if (action === 'reject') {
+        message = 'Product permission has been rejected.';
+    } else if (action === 'accepted') {
+        message = 'Product permission has been successfully accepted.';
+    } else {
+        message = 'Invalid action. Please provide either "accept" or "reject".';
+    }
 
     sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
-        message: `Product permission successfully`,
+        message: message,
         data: result,
     });
 });
+
 
 const updateProduct = catchAsync(async (req, res) => {
     const {
