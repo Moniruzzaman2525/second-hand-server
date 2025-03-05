@@ -4,7 +4,7 @@ import AppError from "../../error/AppError";
 import { StatusCodes } from "http-status-codes";
 import { Product } from "../products/products.model";
 import QueryBuilder from "../../builder/QueryBuilder";
-import { IJwtPayload } from "../auth/auth.interface";
+import { TProduct } from "../products/products.interface";
 
 
 const addWishlist = async ({ authUser, itemID }: { authUser: JwtPayload, itemID: string }) => {
@@ -34,10 +34,15 @@ const getUserWishlist = async (query: Record<string, unknown>, authUser: JwtPayl
 
     const products = await userQuery.modelQuery.lean();
     const meta = await userQuery.countTotal();
-    const updatedProducts = products.map(product => ({
-        ...product,
-        wishlist: true,
-    }));
+    const updatedProducts = products.map((item) => {
+        const { product, ...rest } = item as { product?: TProduct } & Record<string, unknown>;
+        return {
+            ...rest,
+            ...(product || {}), 
+            wishlist: true,
+        };
+    });
+
     return {
         meta,
         result: updatedProducts,
