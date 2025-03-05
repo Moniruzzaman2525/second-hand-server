@@ -42,7 +42,10 @@ const getAllProduct = async (query: Record<string, unknown>, authUser: JwtPayloa
     } = query;
 
     const productQuery = new QueryBuilder(
-        Product.find({ permission: { $nin: ['pending', 'reject'] } })
+        Product.find({
+            permission: { $nin: ['pending', 'reject'] },
+            status: {$ne: 'sold'}
+        })
             .populate('userID', 'name phoneNumber'),
         pQuery
     )
