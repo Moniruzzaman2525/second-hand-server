@@ -23,19 +23,9 @@ router.get('/', alowAuth(UserRole.USER, UserRole.ADMIN), ProductController.getAl
 router.get('/by-admin', auth(UserRole.ADMIN), ProductController.getAllProductByAdmin);
 router.get('/user-products', auth(UserRole.USER), ProductController.getAllUserProductHandler);
 router.get('/:productId', ProductController.getSingleProduct);
-router.patch(
-    '/:productId',
-    auth(UserRole.USER),
-    multerUpload.fields([{ name: 'images' }]),
-    parseBody,
-    ProductController.updateProduct
-);
+router.patch('/:productId', auth(UserRole.USER), multerUpload.fields([{ name: 'images' }]), parseBody, ProductController.updateProduct);
 
-router.delete(
-    '/:productId',
-    auth(UserRole.USER),
-    ProductController.deleteProduct
-);
+router.delete('/:productId', auth(UserRole.USER), ProductController.deleteProduct);
 router.patch('/:productId/permission', auth(UserRole.ADMIN), ProductController.permissionProduct)
 
 export const ProductRoutes = router;
