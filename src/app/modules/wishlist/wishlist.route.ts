@@ -7,5 +7,6 @@ const router = Router();
 
 
 router.post('/', auth(UserRole.USER || UserRole.ADMIN), wishlistController.addWishlist);
+router.get('/', auth(UserRole.USER || UserRole.ADMIN), wishlistController.getWishlist);
 
 export const wishlistRoute = router;
