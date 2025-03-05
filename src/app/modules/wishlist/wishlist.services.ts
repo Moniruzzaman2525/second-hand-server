@@ -49,19 +49,16 @@ const getUserWishlist = async (query: Record<string, unknown>, authUser: JwtPayl
     };
 };
 
-const removeWishlist = async (wishlistId: string) => {
-
-    const wishlist = await Wishlist.findById(wishlistId);
-    if (!wishlist) {
-        throw new AppError(StatusCodes.NOT_FOUND, 'Wishlist Not Found');
+const removeWishlist = async ({ authUser, wishlistId }: { authUser: JwtPayload, wishlistId: string }) => {
+    const wishlistItem = await Wishlist.findOne({ userId: authUser.userId, product: wishlistId });
+    if (!wishlistItem) {
+        throw new AppError(StatusCodes.NOT_FOUND, 'Item not found in wishlist');
     }
+    const result = await Wishlist.deleteOne({ _id: wishlistItem._id });
 
-    const deletedWishlist = await Wishlist.findByIdAndDelete(wishlistId);
-    if (!deletedWishlist) {
-        throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR, 'Failed to delete product');
-    }
-    return deletedWishlist;
+    return result
 };
+
 
 
 export const wishlistServices = {
