@@ -29,6 +29,7 @@ const getUserWishlist = async (query: Record<string, unknown>, authUser: IJwtPay
         categories,
         ...pQuery
     } = query;
+
     const productQuery = new QueryBuilder(
         Product.find({ authUser })
             .populate('productId'),
@@ -42,12 +43,15 @@ const getUserWishlist = async (query: Record<string, unknown>, authUser: IJwtPay
         .priceRange(Number(minPrice) || 0, Number(maxPrice) || Infinity);
 
     const products = await productQuery.modelQuery.lean();
-
     const meta = await productQuery.countTotal();
+    const updatedProducts = products.map(product => ({
+        ...product,
+        wishlist: true,
+    }));
 
     return {
         meta,
-        result: products,
+        result: updatedProducts,
     };
 };
 
