@@ -3,7 +3,7 @@
 import { model, Schema } from "mongoose";
 import { TContact } from "./contact.interface";
 
-const messageSchema = new Schema<TContact>({
+const contactSchema = new Schema<TContact>({
     name: {
         type: String,
         required: [true, 'Name is required']
@@ -24,4 +24,4 @@ const messageSchema = new Schema<TContact>({
     timestamps: true,
 });
 
-export const Message = model<TContact>("Message", messageSchema);
+export const Contact = model<TContact>("Contact", contactSchema);

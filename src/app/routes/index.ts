@@ -6,6 +6,7 @@ import { userRoutes } from "../modules/user/user.route";
 import { messageRoute } from "../modules/message/message.route";
 import { transactionsRoute } from "../modules/transactions/transactions.rotue";
 import { wishlistRoute } from "../modules/wishlist/wishlist.route";
+import { contactRoute } from "../modules/contact/contact.route";
 
 
 const router = Router()
@@ -38,6 +39,10 @@ const moduleRoutes = [
     {
         path: '/wishlist',
         route: wishlistRoute,
+    },
+    {
+        path: '/contact',
+        route: contactRoute,
     },
 ]
 
