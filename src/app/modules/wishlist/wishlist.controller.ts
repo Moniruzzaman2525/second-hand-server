@@ -18,7 +18,18 @@ const addWishlist = catchAsync(async (req: Request, res: Response) => {
         data: result,
     });
 });
+const getWishlist = catchAsync(async (req: Request, res: Response) => {
+    const authUser = req.user as IJwtPayload;
+    const result = await wishlistServices.getWishlist( authUser );
+
+    sendResponse(res, {
+        statusCode: StatusCodes.CREATED,
+        success: true,
+        message: "Wishlist product are retrieved successfully",
+        data: result,
+    });
+});
 
 export const wishlistController = {
-    addWishlist
+    addWishlist, getWishlist
 }
