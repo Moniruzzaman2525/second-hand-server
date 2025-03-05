@@ -12,7 +12,7 @@ const transactionSchema = new Schema<TTransaction>({
         ref: 'User',
         required: [true, 'Seller ID is required']
     },
-    itemID: {
+    item: {
         type: Schema.Types.ObjectId,
         ref: 'Product',
         required: [true, 'Item ID is required']

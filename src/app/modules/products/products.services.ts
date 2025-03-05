@@ -25,7 +25,7 @@ const createProduct = async (
     }
 
     productData.images = images.map((image) => image.path);
-    productData.userID = authUser.userId
+    productData.userId = authUser.userId
     const newProduct = new Product(productData);
     const result = await newProduct.save();
     return result;
@@ -44,9 +44,9 @@ const getAllProduct = async (query: Record<string, unknown>, authUser: JwtPayloa
     const productQuery = new QueryBuilder(
         Product.find({
             permission: { $nin: ['pending', 'reject'] },
-            status: {$ne: 'sold'}
+            // status: {$ne: 'sold'}
         })
-            .populate('userID', 'name phoneNumber'),
+            .populate('userId', 'name phoneNumber'),
         pQuery
     )
         .search(['title', 'description'])

@@ -7,7 +7,7 @@ export interface TProduct {
     price: number;
     condition: 'new' | 'used';
     images: string[];
-    userID: string;
+    userId: string;
     location: string;
     address: string;
     wishlist?: boolean;

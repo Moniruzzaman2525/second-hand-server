@@ -31,7 +31,7 @@ const productSchema = new Schema<TProduct>({
         type: String,
         required: [true, 'City image is required']
     },
-    userID: {
+    userId: {
         type: String,
         ref: 'User',
         required: [true, 'Seller ID is required']

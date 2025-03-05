@@ -7,15 +7,15 @@ import QueryBuilder from "../../builder/QueryBuilder";
 import { TProduct } from "../products/products.interface";
 
 
-const addWishlist = async ({ authUser, itemID }: { authUser: JwtPayload, itemID: string }) => {
-    const product = await Product.findById(itemID);
+const addWishlist = async ({ authUser, item }: { authUser: JwtPayload, item: string }) => {
+    const product = await Product.findById(item);
     if (!product) {
         throw new AppError(StatusCodes.BAD_REQUEST, 'This product not available');
     }
 
     const data = {
         userId: authUser.userId,
-        product: itemID
+        product: item
     };
     const transaction = new Wishlist(data);
     const result = await transaction.save();
@@ -24,7 +24,7 @@ const addWishlist = async ({ authUser, itemID }: { authUser: JwtPayload, itemID:
 
 const getUserWishlist = async (query: Record<string, unknown>, authUser: JwtPayload) => {
     const { ...pQuery } = query;
-    const userQuery = new QueryBuilder(Wishlist.find({ userId: authUser.userId }).populate("product")
+    const userQuery = new QueryBuilder(Wishlist.find({ userId: authUser.userId }).populate("product").populate('userId')
         , pQuery)
         .search(['product'])
         .filter()

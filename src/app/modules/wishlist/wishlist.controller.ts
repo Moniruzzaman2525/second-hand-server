@@ -7,9 +7,9 @@ import { wishlistServices } from "./wishlist.services";
 
 
 const addWishlist = catchAsync(async (req: Request, res: Response) => {
-    const { itemID } = req.body;
+    const { item } = req.body;
     const authUser = req.user as IJwtPayload;
-    const result = await wishlistServices.addWishlist({ authUser, itemID });
+    const result = await wishlistServices.addWishlist({ authUser, item });
 
     sendResponse(res, {
         statusCode: StatusCodes.CREATED,
@@ -36,7 +36,6 @@ const removeWishlist = catchAsync(async (req, res) => {
     } = req;
     const authUser = req.user as IJwtPayload;
     const result = await wishlistServices.removeWishlist({ authUser, wishlistId } );
-
     sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,

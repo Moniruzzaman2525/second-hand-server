@@ -7,9 +7,9 @@ import { transactionServices } from "./transactions.services";
 
 
 const createNewTransaction = catchAsync(async (req: Request, res: Response) => {
-    const { sellerID, itemID } = req.body;
+    const { sellerID, item } = req.body;
     const authUser = req.user as IJwtPayload;
-    const result = await transactionServices.createNewTransaction({authUser, sellerID, itemID});
+    const result = await transactionServices.createNewTransaction({ authUser, sellerID, item });
 
     sendResponse(res, {
         statusCode: StatusCodes.CREATED,
@@ -38,8 +38,8 @@ const getUserSellerTransactions = catchAsync(async (req: Request, res: Response)
     });
 });
 const getConfirmTransactions = catchAsync(async (req: Request, res: Response) => {
-    const itemId = req.params.transactionId;
-    const result = await transactionServices.transactionComplete(itemId, req.user as IJwtPayload);
+    const item = req.params.transactionId;
+    const result = await transactionServices.transactionComplete(item, req.user as IJwtPayload);
 
     sendResponse(res, {
         statusCode: StatusCodes.CREATED,
@@ -49,9 +49,8 @@ const getConfirmTransactions = catchAsync(async (req: Request, res: Response) =>
     });
 });
 const deleteTransactions = catchAsync(async (req: Request, res: Response) => {
-    const itemId = req.params.transactionId;
-    const result = await transactionServices.deleteTransactions(itemId);
-
+    const item = req.params.transactionId;
+    const result = await transactionServices.deleteTransactions(item);
     sendResponse(res, {
         statusCode: StatusCodes.CREATED,
         success: true,
