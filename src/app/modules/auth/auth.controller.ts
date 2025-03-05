@@ -114,21 +114,20 @@ const forgetPassword = catchAsync(async (req, res) => {
     });
 });
 
-// const resetPassword = catchAsync(async (req, res) => {
-//     const token = req.headers.authorization;
+const resetPassword = catchAsync(async (req, res) => {
+    const token = req.headers.authorization;
 
-//     if (!token) {
-//         throw new AppError(StatusCodes.BAD_REQUEST, 'Something went wrong !');
-//     }
-
-//     const result = await authUserServices.resetPassword(req.body, token);
-//     sendResponse(res, {
-//         statusCode: StatusCodes.OK,
-//         success: true,
-//         message: 'Password reset succesfully!',
-//         data: result,
-//     });
-// });
+    if (!token) {
+        throw new AppError(StatusCodes.BAD_REQUEST, 'Something went wrong !');
+    }
+    const result = await authUserServices.resetPassword(req.body, token);
+    sendResponse(res, {
+        statusCode: StatusCodes.OK,
+        success: true,
+        message: 'Password reset succesfully!',
+        data: result,
+    });
+});
 
 export const userControllers = {
     createUserController,
@@ -137,5 +136,6 @@ export const userControllers = {
     getMe,
     changesPassword,
     updateProfile,
-    forgetPassword
+    forgetPassword,
+    resetPassword
 }

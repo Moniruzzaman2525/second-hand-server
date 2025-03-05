@@ -1,6 +1,4 @@
-import nodemailer from 'nodemailer';
-import fs from 'fs';
-import path from 'path';
+import nodemailer from 'nodemailer';;
 import { loadEmailTemplate } from './loadEmailTemplate';
 
 export const sendEmail = async (to: string, subject: string, templateName: string, replacements: { [key: string]: string }) => {
@@ -20,7 +18,7 @@ export const sendEmail = async (to: string, subject: string, templateName: strin
     const mailOptions = {
         from: 'web.moniruzzaman1@gmail.com',
         to,
-        subject: 'Reset your password within ten minutes!',
+        subject: subject,
         html: htmlContent,
     };
 

@@ -7,7 +7,7 @@ import config from "../../config";
 import { createToken } from "./auth.utils";
 import { StatusCodes } from "http-status-codes";
 import { sendEmail } from "../../utils/sendEmail";
-
+import bcrypt from 'bcrypt'
 
 const createUserIntoDB = async (payload: TUser) => {
     const session = await mongoose.startSession();
@@ -198,6 +198,47 @@ const forgetPassword = async (userId: string) => {
     return res
 };
 
+const resetPassword = async (
+    payload: { id: string; newPassword: string },
+    token: string,
+) => {
+    const user = await AuthUser.isUserExistsById(payload?.id);
+
+    if (!user) {
+        throw new AppError(StatusCodes.NOT_FOUND, 'This user is not found !');
+    }
+    const isDeleted = user?.ban;
+
+    if (isDeleted) {
+        throw new AppError(StatusCodes.FORBIDDEN, 'This user is ban !');
+    }
+    const decoded = jwt.verify(
+        token,
+        config.jwt_access_secret as string,
+    ) as JwtPayload;
+
+    if (payload.id !== decoded.userId) {
+        console.log(payload.id, decoded.userId);
+        throw new AppError(StatusCodes.FORBIDDEN, 'You are forbidden!');
+    }
+
+    const newHashedPassword = await bcrypt.hash(
+        payload.newPassword,
+        Number(config.bcrypt_salt_rounds),
+    );
+
+    await AuthUser.findOneAndUpdate(
+        {
+            id: decoded.userId,
+            role: decoded.role,
+        },
+        {
+            password: newHashedPassword,
+            passwordChangedAt: new Date(),
+        },
+    );
+};
+
 export const authUserServices = {
     createUserIntoDB,
     loginUserServices,
@@ -206,4 +247,5 @@ export const authUserServices = {
     changesPassword,
     updateProfile,
     forgetPassword,
+    resetPassword
 }
