@@ -1,4 +1,5 @@
 import config from "../../config";
+import AppError from "../../error/AppError";
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import { IJwtPayload } from "./auth.interface";
@@ -53,11 +54,11 @@ const refreshToken = catchAsync(async (req, res) => {
 
     sendResponse(res, {
         statusCode: StatusCodes.OK,
-      success: true,
+        success: true,
         message: 'Access token is retrieved successFully!',
-      data: result,
+        data: result,
     });
-  });
+});
 
 const getMe = catchAsync(async (req, res) => {
     const { user } = req;
@@ -73,11 +74,11 @@ const getMe = catchAsync(async (req, res) => {
 
 
 const changesPassword = catchAsync(async (req, res) => {
-    const { user, body: payload} = req;
+    const { user, body: payload } = req;
     const result = await authUserServices.changesPassword(
-           payload,
-           user as IJwtPayload
-       );
+        payload,
+        user as IJwtPayload
+    );
 
     sendResponse(res, {
         statusCode: StatusCodes.OK,
@@ -87,11 +88,11 @@ const changesPassword = catchAsync(async (req, res) => {
     });
 });
 const updateProfile = catchAsync(async (req, res) => {
-    const { user, body: payload} = req;
+    const { user, body: payload } = req;
     const result = await authUserServices.updateProfile(
-           payload,
-           user as IJwtPayload
-       );
+        payload,
+        user as IJwtPayload
+    );
 
     sendResponse(res, {
         statusCode: StatusCodes.OK,
@@ -101,6 +102,34 @@ const updateProfile = catchAsync(async (req, res) => {
     });
 });
 
+
+const forgetPassword = catchAsync(async (req, res) => {
+    const userId = req.body.email
+    const result = await authUserServices.forgetPassword(userId);
+    sendResponse(res, {
+        statusCode: StatusCodes.OK,
+        success: true,
+        message: 'Reset link is generated succesfully!',
+        data: result,
+    });
+});
+
+// const resetPassword = catchAsync(async (req, res) => {
+//     const token = req.headers.authorization;
+
+//     if (!token) {
+//         throw new AppError(StatusCodes.BAD_REQUEST, 'Something went wrong !');
+//     }
+
+//     const result = await authUserServices.resetPassword(req.body, token);
+//     sendResponse(res, {
+//         statusCode: StatusCodes.OK,
+//         success: true,
+//         message: 'Password reset succesfully!',
+//         data: result,
+//     });
+// });
+
 export const userControllers = {
     createUserController,
     loginUserController,
@@ -108,4 +137,5 @@ export const userControllers = {
     getMe,
     changesPassword,
     updateProfile,
+    forgetPassword
 }

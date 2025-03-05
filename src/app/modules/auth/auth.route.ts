@@ -11,7 +11,7 @@ const router = express.Router()
 router.post('/register', validateRequest(userValidation.userValidationSchema), userControllers.createUserController)
 router.post('/login', validateRequest(userValidation.userValidationLoginSchema), userControllers.loginUserController)
 router.post('/refresh-token', validateRequest(userValidation.refreshTokenValidationSchema), userControllers.refreshToken)
+// router.post('/reset-password', validateRequest(userValidation.forgetPasswordValidationSchema), userControllers.resetPassword);
 
-
-
+router.post('/forget-password', validateRequest(userValidation.forgetPasswordValidationSchema), userControllers.forgetPassword);
 export const UserRoute = router

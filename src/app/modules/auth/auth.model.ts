@@ -69,6 +69,9 @@ userSchema.post('save', async function (doc, next) {
 userSchema.statics.isUserExistsByEmail = async function (email) {
     return await AuthUser.findOne({email: email}).select('+password')
 }
+userSchema.statics.isUserExistsById = async function (id) {
+    return await AuthUser.findById(id).select('+password')
+}
 
 userSchema.statics.isPasswordMatch = async function (plainTextPassword, hashPassword) {
     return await bcrypt.compare(plainTextPassword, hashPassword)

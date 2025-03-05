@@ -6,6 +6,7 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 import config from "../../config";
 import { createToken } from "./auth.utils";
 import { StatusCodes } from "http-status-codes";
+import { sendEmail } from "../../utils/sendEmail";
 
 
 const createUserIntoDB = async (payload: TUser) => {
@@ -160,9 +161,49 @@ const updateProfile = async (payload: Partial<TUser>, authUser: IJwtPayload) => 
 };
 
 
+const forgetPassword = async (userId: string) => {
+    // checking if the user is exist
+    const user = await AuthUser.isUserExistsByEmail(userId);
+    if (!user) {
+        throw new AppError(StatusCodes.NOT_FOUND, 'This user is not found !');
+    }
+    // checking if the user is already deleted
+    const isDeleted = user?.ban;
+
+    if (isDeleted) {
+        throw new AppError(StatusCodes.FORBIDDEN, 'This user is ban !');
+    }
+
+
+    const jwtPayload = {
+        email: user.email,
+        name: user.name,
+        role: user.role as string,
+        userId: user._id,
+    };
+
+    const resetToken = createToken(
+        jwtPayload,
+        config.jwt_access_secret as string,
+        '10m',
+    );
+
+    const resetUILink = `${config.reset_pass_ui_link}?id=${user._id}&token=${resetToken} `;
+
+    const replacements = {
+        userName: user.name,
+        resetLink: resetUILink,
+    };
+    const res = await sendEmail(user.email, 'Reset your password within ten minutes!', 'resetPasswordEmail', replacements);
+    return res
+};
+
 export const authUserServices = {
     createUserIntoDB,
     loginUserServices,
     refreshToken,
-    getMe, changesPassword, updateProfile
+    getMe,
+    changesPassword,
+    updateProfile,
+    forgetPassword,
 }

@@ -36,6 +36,7 @@ export interface IJwtPayload {
 
 export interface UserModel extends Model<TUser> {
     isUserExistsByEmail(email: string): Promise<TUser>
+    isUserExistsById(id: string): Promise<TUser>
     isPasswordMatch(plainTextPassword: string, hashPassword: string): Promise<boolean>
 }
 
