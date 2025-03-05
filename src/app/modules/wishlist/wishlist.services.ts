@@ -15,7 +15,7 @@ const addWishlist = async ({ authUser, itemID }: { authUser: JwtPayload, itemID:
 
     const data = {
         userId: authUser.userId,
-        productId: itemID
+        product: itemID
     };
     const transaction = new Wishlist(data);
     const result = await transaction.save();
@@ -38,7 +38,7 @@ const getUserWishlist = async (query: Record<string, unknown>, authUser: JwtPayl
         const { product, ...rest } = item as { product?: TProduct } & Record<string, unknown>;
         return {
             ...rest,
-            ...(product || {}), 
+            ...(product || {}),
             wishlist: true,
         };
     });
@@ -49,6 +49,21 @@ const getUserWishlist = async (query: Record<string, unknown>, authUser: JwtPayl
     };
 };
 
+const removeWishlist = async (wishlistId: string) => {
+
+    const wishlist = await Wishlist.findById(wishlistId);
+    if (!wishlist) {
+        throw new AppError(StatusCodes.NOT_FOUND, 'Wishlist Not Found');
+    }
+
+    const deletedWishlist = await Wishlist.findByIdAndDelete(wishlistId);
+    if (!deletedWishlist) {
+        throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR, 'Failed to delete product');
+    }
+    return deletedWishlist;
+};
+
+
 export const wishlistServices = {
-    addWishlist, getUserWishlist
+    addWishlist, getUserWishlist, removeWishlist
 }

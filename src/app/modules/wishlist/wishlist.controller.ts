@@ -30,6 +30,23 @@ const getWishlist = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+const removeWishlist = catchAsync(async (req, res) => {
+    const {
+        params: { wishlistId },
+    } = req;
+
+    const result = await wishlistServices.removeWishlist(
+        wishlistId
+    );
+
+    sendResponse(res, {
+        statusCode: StatusCodes.OK,
+        success: true,
+        message: "Wishlist remove successfully!",
+        data: result,
+    });
+});
+
 export const wishlistController = {
-    addWishlist, getWishlist
+    addWishlist, getWishlist, removeWishlist
 }
