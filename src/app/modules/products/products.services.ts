@@ -55,7 +55,7 @@ const getAllProduct = async (query: Record<string, unknown>, authUser: JwtPayloa
         const products = await productQuery.modelQuery.lean();
         if (authUser) {
             const wishlist = await Wishlist.find({ userId: authUser.userId }).lean();
-            const wishlistProductIds = new Set(wishlist.map((item) => item.productId.toString()));
+            const wishlistProductIds = new Set(wishlist.map((item) => item.product.toString()));
             products.forEach((product: any) => {
                 product.wishlist = wishlistProductIds.has(product._id.toString());
             });

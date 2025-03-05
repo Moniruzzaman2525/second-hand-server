@@ -3,7 +3,7 @@ import { TWishlist } from "./wishlist.interface";
 
 
 const wishlistSchema = new Schema<TWishlist>({
-    productId: {
+    product: {
         type: Schema.Types.ObjectId,
         required: true,
         ref: "Product",
