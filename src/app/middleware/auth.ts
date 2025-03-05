@@ -33,7 +33,6 @@ const auth = (...requiredRoles: TUserRole[]) => {
     if (user?.ban) {
       throw new AppError(401, 'This user is blocked!');
     }
-
     // checking role
     if (requiredRoles && !requiredRoles.includes(role)) {
       throw new AppError(401, 'You are not authorized !')
