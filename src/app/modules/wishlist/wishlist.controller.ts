@@ -20,7 +20,7 @@ const addWishlist = catchAsync(async (req: Request, res: Response) => {
 });
 const getWishlist = catchAsync(async (req: Request, res: Response) => {
     const authUser = req.user as IJwtPayload;
-    const result = await wishlistServices.getAllUserProduct(req.query, authUser);
+    const result = await wishlistServices.getUserWishlist(req.query, authUser);
 
     sendResponse(res, {
         statusCode: StatusCodes.CREATED,
