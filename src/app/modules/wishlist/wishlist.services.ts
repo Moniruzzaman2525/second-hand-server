@@ -22,9 +22,9 @@ const addWishlist = async ({ authUser, itemID }: { authUser: JwtPayload, itemID:
     return result;
 };
 
-const getUserWishlist = async (query: Record<string, unknown>, userId: JwtPayload) => {
+const getUserWishlist = async (query: Record<string, unknown>, authUser: JwtPayload) => {
     const { ...pQuery } = query;
-    const userQuery = new QueryBuilder(Wishlist.find().populate("product")
+    const userQuery = new QueryBuilder(Wishlist.find({ userId: authUser.userId }).populate("product")
         , pQuery)
         .search(['product'])
         .filter()
@@ -32,12 +32,15 @@ const getUserWishlist = async (query: Record<string, unknown>, userId: JwtPayloa
         .paginate()
         .fields();
 
-    const users = await userQuery.modelQuery.lean();
+    const products = await userQuery.modelQuery.lean();
     const meta = await userQuery.countTotal();
-
+    const updatedProducts = products.map(product => ({
+        ...product,
+        wishlist: true,
+    }));
     return {
         meta,
-        result: users,
+        result: updatedProducts,
     };
 };
 
