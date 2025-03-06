@@ -19,6 +19,7 @@ const createUserController = catchAsync(async (req, res) => {
         success: true,
         statusCode: 201,
         message: 'User registered successfully',
+        data: result
     })
 
 })

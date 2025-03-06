@@ -56,6 +56,32 @@ const createUserIntoDB = async (payload: TUser) => {
     }
 };
 
+const verifyUserEmail = async (userId: string, token: string) => {
+    const decodedToken = jwt.verify(
+        token,
+        config.jwt_access_secret as string,
+    ) as JwtPayload;
+
+    if (!decodedToken || decodedToken.userId !== userId) {
+        throw new AppError(StatusCodes.FORBIDDEN, 'Invalid or expired token');
+    }
+
+    const user = await AuthUser.findById(userId);
+    if (!user) {
+        throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
+    }
+
+    if (user.isVerified) {
+        throw new AppError(StatusCodes.BAD_REQUEST, 'This user is already verified');
+    }
+
+    user.isVerified = true;
+    const res = await user.save();
+
+    return res
+};
+
+
 // login user services
 const loginUserServices = async (payload: TUserLogin) => {
     const user = await AuthUser.isUserExistsByEmail(payload.email)
