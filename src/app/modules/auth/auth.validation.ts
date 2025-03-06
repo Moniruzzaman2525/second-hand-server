@@ -71,6 +71,13 @@ const resetPasswordValidationSchema = z.object({
     }),
   }),
 });
+const verifyEmailValidationSchema = z.object({
+  body: z.object({
+    id: z.string({
+      required_error: 'User id is required!',
+    })
+  }),
+});
 
 export const userValidation = {
   userValidationSchema,
@@ -78,5 +85,6 @@ export const userValidation = {
   refreshTokenValidationSchema,
   changesPasswordSchema,
   resetPasswordValidationSchema,
-  forgetPasswordValidationSchema
+  forgetPasswordValidationSchema,
+  verifyEmailValidationSchema
 };

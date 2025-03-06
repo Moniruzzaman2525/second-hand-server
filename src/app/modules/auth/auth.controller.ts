@@ -107,7 +107,7 @@ const forgetPassword = catchAsync(async (req, res) => {
     sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
-        message: 'Reset link is generated succesfully!',
+        message: 'Reset link is generated successFully!',
         data: result,
     });
 });
@@ -122,7 +122,21 @@ const resetPassword = catchAsync(async (req, res) => {
     sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
-        message: 'Password reset succesfully!',
+        message: 'Password reset successFully!',
+        data: result,
+    });
+});
+const verifyEmail = catchAsync(async (req, res) => {
+    const token = req.headers.authorization;
+
+    if (!token) {
+        throw new AppError(StatusCodes.BAD_REQUEST, 'Something went wrong !');
+    }
+    const result = await authUserServices.resetPassword(req.body, token);
+    sendResponse(res, {
+        statusCode: StatusCodes.OK,
+        success: true,
+        message: 'Password reset successFully!',
         data: result,
     });
 });
@@ -135,5 +149,6 @@ export const userControllers = {
     changesPassword,
     updateProfile,
     forgetPassword,
-    resetPassword
+    resetPassword,
+    verifyEmail
 }
