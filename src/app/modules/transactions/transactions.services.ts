@@ -5,11 +5,13 @@ import QueryBuilder from "../../builder/QueryBuilder";
 import { StatusCodes } from "http-status-codes";
 import { Product } from "../products/products.model";
 import mongoose from "mongoose";
+import { sendEmail } from "../../utils/sendEmail";
 
 
 
 const createNewTransaction = async ({ authUser, sellerID, item }: { authUser: JwtPayload, sellerID: string, item: string }) => {
     const existingTransaction = await Transaction.findOne({ buyerID: authUser.userId, sellerID, item });
+    const product = await Product.findById(item);
     if (existingTransaction) {
         throw new AppError(StatusCodes.BAD_REQUEST, 'You have already purchased this item from this seller');
     }
@@ -20,6 +22,17 @@ const createNewTransaction = async ({ authUser, sellerID, item }: { authUser: Jw
     };
     const transaction = new Transaction(data);
     const result = await transaction.save();
+    if (product) {
+        const replacements = {
+            userName: authUser?.name || "Dear",
+            adTitle: product.title || 'No title available',
+            condition: product.condition || 'Unknown condition',
+            adCategory: product.category || 'Unknown category',
+            adLink: `http://localhost:3000/dashboard/purchase-history`
+        };
+        await sendEmail(authUser.email, 'Your project available for sell', 'PurchaseHtml', replacements);
+    }
+
     return result;
 };
 

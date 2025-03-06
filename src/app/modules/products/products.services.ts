@@ -183,26 +183,13 @@ const updateProduct = async (
 };
 
 
-// const deleteProduct = async (productId: string) => {
-
-//     const product = await Product.findById(productId);
-//     if (!product) {
-//         throw new AppError(StatusCodes.NOT_FOUND, 'Product Not Found');
-//     }
-
-//     const deletedProduct = await Product.findByIdAndDelete(productId);
-//     if (!deletedProduct) {
-//         throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR, 'Failed to delete product');
-//     }
-//     return deletedProduct;
-// };
-
 const deleteProduct = async (productId: string) => {
     const session = await mongoose.startSession();
     session.startTransaction();
 
     try {
         const product = await Product.findById(productId).session(session);
+        const user = await AuthUser.findById(product?.userId);
         if (!product) {
             throw new AppError(StatusCodes.NOT_FOUND, 'Product Not Found');
         }
@@ -219,6 +206,17 @@ const deleteProduct = async (productId: string) => {
         if (!deletedProduct) {
             throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR, 'Failed to delete product');
         }
+
+        const replacements = {
+            userName: user?.name || "Dear",
+            adTitle: product.title || 'No title available',
+            condition: product.condition || 'Unknown condition',
+            adCategory: product.category || 'Unknown category',
+        };
+        if (user) {
+            await sendEmail(user.email, 'Your project has been delete successfully', 'deleteAdsHtml', replacements);
+        }
+
         await session.commitTransaction();
         session.endSession();
 
@@ -243,6 +241,7 @@ const permissionProduct = async (productId: string, payload: { permission: strin
         { new: true }
     );
     const replacements = {
+        userName: user?.name || "Dear",
         adTitle: product.title || 'No title available',
         condition: product.condition || 'Unknown condition',
         adCategory: product.category || 'Unknown category',
