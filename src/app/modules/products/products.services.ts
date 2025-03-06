@@ -6,9 +6,10 @@ import AppError from '../../error/AppError';
 import { Product } from './products.model';
 import QueryBuilder from '../../builder/QueryBuilder';
 import { AuthUser } from '../auth/auth.model';
-import { Types } from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 import { JwtPayload } from 'jsonwebtoken';
 import { Wishlist } from '../wishlist/wishlist.model';
+import { Transaction } from '../transactions/transactions.model';
 
 const createProduct = async (
     productData: Partial<TProduct>,
@@ -113,8 +114,8 @@ const getAllUserProduct = async (query: Record<string, unknown>, userID: string)
         ...pQuery
     } = query;
     const productQuery = new QueryBuilder(
-        Product.find({ userID })
-            .populate('userID', 'name phoneNumber'),
+        Product.find({ userId: userID })
+            .populate('userId', 'name phoneNumber'),
         pQuery
     )
         .search(['title', 'description'])
@@ -125,7 +126,6 @@ const getAllUserProduct = async (query: Record<string, unknown>, userID: string)
         .priceRange(Number(minPrice) || 0, Number(maxPrice) || Infinity);
 
     const products = await productQuery.modelQuery.lean();
-
     const meta = await productQuery.countTotal();
 
     return {
@@ -173,18 +173,51 @@ const updateProduct = async (
 };
 
 
+// const deleteProduct = async (productId: string) => {
+
+//     const product = await Product.findById(productId);
+//     if (!product) {
+//         throw new AppError(StatusCodes.NOT_FOUND, 'Product Not Found');
+//     }
+
+//     const deletedProduct = await Product.findByIdAndDelete(productId);
+//     if (!deletedProduct) {
+//         throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR, 'Failed to delete product');
+//     }
+//     return deletedProduct;
+// };
+
 const deleteProduct = async (productId: string) => {
+    const session = await mongoose.startSession();
+    session.startTransaction();
 
-    const product = await Product.findById(productId);
-    if (!product) {
-        throw new AppError(StatusCodes.NOT_FOUND, 'Product Not Found');
-    }
+    try {
+        const product = await Product.findById(productId).session(session);
+        if (!product) {
+            throw new AppError(StatusCodes.NOT_FOUND, 'Product Not Found');
+        }
+        const wishlist = await Wishlist.deleteMany({ product: productId }).session(session);
+        if (!wishlist) {
+            throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR, 'Failed to delete product');
+        }
 
-    const deletedProduct = await Product.findByIdAndDelete(productId);
-    if (!deletedProduct) {
-        throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR, 'Failed to delete product');
+        const transaction = await Transaction.deleteMany({ item: productId }).session(session);
+        if (!transaction) {
+            throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR, 'Failed to delete product');
+        }
+        const deletedProduct = await Product.findByIdAndDelete(productId).session(session);
+        if (!deletedProduct) {
+            throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR, 'Failed to delete product');
+        }
+        await session.commitTransaction();
+        session.endSession();
+
+        return deletedProduct;
+    } catch (error) {
+        await session.abortTransaction();
+        session.endSession();
+        throw error;
     }
-    return deletedProduct;
 };
 
 const permissionProduct = async (productId: string, payload: { permission: string }) => {
