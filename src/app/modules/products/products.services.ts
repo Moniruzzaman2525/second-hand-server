@@ -28,16 +28,17 @@ const createProduct = async (
 
     productData.images = images.map((image) => image.path);
     productData.userId = authUser.userId
+    const newProduct = new Product(productData);
+    const result = await newProduct.save();
     const replacements = {
         userName: authUser.name,
         adTitle: productData.title || 'No title available',
         condition: productData.condition || 'Unknown condition',
         adCategory: productData.category || 'Unknown category',
-        adLink: 'http://localhost:3000/products'
+        adLink: `http://localhost:3000/products/${result._id}`
     };
-    await sendEmail(authUser.email, 'Verify your mail', 'verifyUserHtml', replacements);
-    const newProduct = new Product(productData);
-    const result = await newProduct.save();
+    await sendEmail(authUser.email, 'Your project created successfully', 'projectCreateHtml', replacements);
+
     return result;
 };
 
@@ -144,7 +145,7 @@ const getAllUserProduct = async (query: Record<string, unknown>, userID: string)
 };
 
 const getSingleProduct = async (productId: string) => {
-    const product = await Product.findById(productId).populate('userID', 'name phoneNumber email _id')
+    const product = await Product.findById(productId).populate('userId', 'name phoneNumber email _id')
 
     if (!product) {
         throw new AppError(StatusCodes.NOT_FOUND, 'Product not found');
@@ -232,6 +233,7 @@ const deleteProduct = async (productId: string) => {
 const permissionProduct = async (productId: string, payload: { permission: string }) => {
 
     const product = await Product.findById(productId);
+    const user = await AuthUser.findById(product?.userId);
     if (!product) {
         throw new AppError(StatusCodes.NOT_FOUND, 'Product not found!');
     }
@@ -240,6 +242,16 @@ const permissionProduct = async (productId: string, payload: { permission: strin
         { permission: payload.permission },
         { new: true }
     );
+    const replacements = {
+        adTitle: product.title || 'No title available',
+        condition: product.condition || 'Unknown condition',
+        adCategory: product.category || 'Unknown category',
+        adLink: `http://localhost:3000/products/${product._id}`
+    };
+    if (user) {
+        await sendEmail(user.email, 'Your project available for sell', 'ApprovedAdds', replacements);
+    }
+
     return completePermission;
 };
 
