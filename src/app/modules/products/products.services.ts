@@ -35,7 +35,7 @@ const createProduct = async (
         adTitle: productData.title || 'No title available',
         condition: productData.condition || 'Unknown condition',
         adCategory: productData.category || 'Unknown category',
-        adLink: `https://second-hand-client.vercel.app/products/${result._id}`
+        adLink: `https://second-hand-client-dc3y.vercel.app/products/${result._id}`
     };
     await sendEmail(authUser.email, 'Your project created successfully', 'projectCreateHtml', replacements);
 
@@ -66,14 +66,14 @@ const getAllProduct = async (query: Record<string, unknown>, authUser: JwtPayloa
         .paginate()
         .fields()
         .priceRange(Number(minPrice) || 0, Number(maxPrice) || Infinity);
-        const products = await productQuery.modelQuery.lean();
-        if (authUser) {
-            const wishlist = await Wishlist.find({ userId: authUser.userId }).lean();
-            const wishlistProductIds = new Set(wishlist.map((item) => item.product.toString()));
-            products.forEach((product: any) => {
-                product.wishlist = wishlistProductIds.has(product._id.toString());
-            });
-        }
+    const products = await productQuery.modelQuery.lean();
+    if (authUser) {
+        const wishlist = await Wishlist.find({ userId: authUser.userId }).lean();
+        const wishlistProductIds = new Set(wishlist.map((item) => item.product.toString()));
+        products.forEach((product: any) => {
+            product.wishlist = wishlistProductIds.has(product._id.toString());
+        });
+    }
     const meta = await productQuery.countTotal();
 
     return {
@@ -245,7 +245,7 @@ const permissionProduct = async (productId: string, payload: { permission: strin
         adTitle: product.title || 'No title available',
         condition: product.condition || 'Unknown condition',
         adCategory: product.category || 'Unknown category',
-        adLink: `https://second-hand-client.vercel.app/products/${product._id}`
+        adLink: `https://second-hand-client-dc3y.vercel.app/products/${product._id}`
     };
     if (user) {
         await sendEmail(user.email, 'Your project available for sell', 'ApprovedAdds', replacements);

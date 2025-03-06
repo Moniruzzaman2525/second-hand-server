@@ -12,7 +12,7 @@ const router = Router();
 
 router.post(
     '/',
-    auth(UserRole.USER),
+    alowAuth(UserRole.USER, UserRole.ADMIN),
     multerUpload.fields([{ name: 'images' }]),
     parseBody,
     validateRequest(productValidation.createProductValidationSchema),
