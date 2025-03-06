@@ -7,6 +7,6 @@ export const loadEmailTemplate = (templateName: string, replacements: { [key: st
     for (const [key, value] of Object.entries(replacements)) {
         template = template.replace(`{{${key}}}`, value);
     }
-
+    console.log(template)
     return template;
 };

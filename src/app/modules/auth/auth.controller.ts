@@ -9,7 +9,7 @@ import { StatusCodes } from "http-status-codes";
 const createUserController = catchAsync(async (req, res) => {
     const userData = req.body
     const result = await authUserServices.createUserIntoDB(userData)
-    const { refreshToken, accessToken } = result
+
 
     res.cookie('refreshToken', refreshToken, {
         secure: config.NODE_ENV === 'production',
@@ -19,9 +19,6 @@ const createUserController = catchAsync(async (req, res) => {
         success: true,
         statusCode: 201,
         message: 'User registered successfully',
-        data: {
-            token: accessToken
-        }
     })
 
 })

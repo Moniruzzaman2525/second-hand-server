@@ -15,6 +15,7 @@ export interface TUser {
     phoneNumber: string;
     role?: 'admin' | 'user';
     ban?: boolean;
+    isVerified?: boolean;
     description?: string;
     location?: string;
     address?: string;

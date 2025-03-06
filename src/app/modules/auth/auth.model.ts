@@ -45,6 +45,10 @@ const userSchema = new Schema<TUser, UserModel>({
     ban: {
         type: Boolean,
         default: false
+    },
+    isVerified: {
+        type: Boolean,
+        default: false
     }
 }, {
     timestamps: true,

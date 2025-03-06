@@ -83,7 +83,7 @@ const getAllProductByAdmin = async (query: Record<string, unknown>) => {
     } = query;
     const productQuery = new QueryBuilder(
         Product.find()
-            .populate('userID', 'name phoneNumber'),
+            .populate('userId', 'name phoneNumber'),
         pQuery
     )
         .search(['title', 'description'])

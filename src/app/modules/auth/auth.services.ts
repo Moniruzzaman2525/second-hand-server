@@ -32,20 +32,22 @@ const createUserIntoDB = async (payload: TUser) => {
             userId: userObj._id,
         };
 
-        const accessToken = createToken(
+
+        const verificationToken = createToken(
             jwtPayload,
             config.jwt_access_secret as string,
-            config.jwt_access_expires_in as string
+            '1d',
         );
+        const resetUILink = `${config.verify_email_ui_link}?id=${userObj._id}&token=${verificationToken}`;
+        const replacements = {
+            userName: userObj.name,
+            verificationLink: resetUILink,
+        };
 
-        const refreshToken = createToken(
-            jwtPayload,
-            config.jwt_refresh_secret as string,
-            config.jwt_refresh_expires_in as string
-        );
+        const res = await sendEmail(userObj.email, 'Reset your password within ten minutes!', 'verifyUserHtml', replacements);
         await session.commitTransaction();
         await session.endSession();
-        return { accessToken, refreshToken };
+        return res
 
     } catch (error: any) {
         await session.abortTransaction();
@@ -58,7 +60,10 @@ const createUserIntoDB = async (payload: TUser) => {
 const loginUserServices = async (payload: TUserLogin) => {
     const user = await AuthUser.isUserExistsByEmail(payload.email)
     if (!user) {
-        throw new AppError(404, 'This user is not found !')
+        throw new AppError(404, 'This user is not found!')
+    }
+    if (!user.isVerified) {
+        throw new AppError(404, 'This user is not verified!')
     }
     const passMatch = await AuthUser.isPasswordMatch(payload.password, user.password)
 
@@ -162,12 +167,10 @@ const updateProfile = async (payload: Partial<TUser>, authUser: IJwtPayload) => 
 
 
 const forgetPassword = async (userId: string) => {
-    // checking if the user is exist
     const user = await AuthUser.isUserExistsByEmail(userId);
     if (!user) {
         throw new AppError(StatusCodes.NOT_FOUND, 'This user is not found !');
     }
-    // checking if the user is already deleted
     const isDeleted = user?.ban;
 
     if (isDeleted) {
