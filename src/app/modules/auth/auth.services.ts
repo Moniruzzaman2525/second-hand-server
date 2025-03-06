@@ -56,17 +56,18 @@ const createUserIntoDB = async (payload: TUser) => {
     }
 };
 
-const verifyUserEmail = async (userId: string, token: string) => {
+const verifyUserEmail = async (payload: { id: string }, token: string,) => {
+    // Validate the token
+
     const decodedToken = jwt.verify(
         token,
         config.jwt_access_secret as string,
     ) as JwtPayload;
-
-    if (!decodedToken || decodedToken.userId !== userId) {
+    if (!decodedToken || decodedToken.userId !== payload.id) {
         throw new AppError(StatusCodes.FORBIDDEN, 'Invalid or expired token');
     }
 
-    const user = await AuthUser.findById(userId);
+    const user = await AuthUser.findById(payload.id);
     if (!user) {
         throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
     }
@@ -276,5 +277,6 @@ export const authUserServices = {
     changesPassword,
     updateProfile,
     forgetPassword,
-    resetPassword
+    resetPassword,
+    verifyUserEmail
 }

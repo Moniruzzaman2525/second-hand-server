@@ -9,12 +9,6 @@ import { StatusCodes } from "http-status-codes";
 const createUserController = catchAsync(async (req, res) => {
     const userData = req.body
     const result = await authUserServices.createUserIntoDB(userData)
-
-
-    res.cookie('refreshToken', refreshToken, {
-        secure: config.NODE_ENV === 'production',
-        httpOnly: true
-    })
     sendResponse(res, {
         success: true,
         statusCode: 201,
@@ -118,12 +112,11 @@ const resetPassword = catchAsync(async (req, res) => {
     if (!token) {
         throw new AppError(StatusCodes.BAD_REQUEST, 'Something went wrong !');
     }
-    const result = await authUserServices.resetPassword(req.body, token);
+    await authUserServices.resetPassword(req.body, token);
     sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
         message: 'Password reset successFully!',
-        data: result,
     });
 });
 const verifyEmail = catchAsync(async (req, res) => {
@@ -132,11 +125,11 @@ const verifyEmail = catchAsync(async (req, res) => {
     if (!token) {
         throw new AppError(StatusCodes.BAD_REQUEST, 'Something went wrong !');
     }
-    const result = await authUserServices.resetPassword(req.body, token);
+    const result = await authUserServices.verifyUserEmail(req.body, token);
     sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
-        message: 'Password reset successFully!',
+        message: 'Link verify successfully done!',
         data: result,
     });
 });
