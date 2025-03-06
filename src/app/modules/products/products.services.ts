@@ -10,6 +10,7 @@ import mongoose, { Types } from 'mongoose';
 import { JwtPayload } from 'jsonwebtoken';
 import { Wishlist } from '../wishlist/wishlist.model';
 import { Transaction } from '../transactions/transactions.model';
+import { sendEmail } from '../../utils/sendEmail';
 
 const createProduct = async (
     productData: Partial<TProduct>,
@@ -27,6 +28,14 @@ const createProduct = async (
 
     productData.images = images.map((image) => image.path);
     productData.userId = authUser.userId
+    const replacements = {
+        userName: authUser.name,
+        adTitle: productData.title || 'No title available',
+        condition: productData.condition || 'Unknown condition',
+        adCategory: productData.category || 'Unknown category',
+        adLink: 'http://localhost:3000/products'
+    };
+    await sendEmail(authUser.email, 'Verify your mail', 'verifyUserHtml', replacements);
     const newProduct = new Product(productData);
     const result = await newProduct.save();
     return result;

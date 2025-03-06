@@ -44,7 +44,7 @@ const createUserIntoDB = async (payload: TUser) => {
             verificationLink: resetUILink,
         };
 
-        const res = await sendEmail(userObj.email, 'Reset your password within ten minutes!', 'verifyUserHtml', replacements);
+        const res = await sendEmail(userObj.email, 'Verify your mail', 'verifyUserHtml', replacements);
         await session.commitTransaction();
         await session.endSession();
         return res
