@@ -35,7 +35,7 @@ const createProduct = async (
         adTitle: productData.title || 'No title available',
         condition: productData.condition || 'Unknown condition',
         adCategory: productData.category || 'Unknown category',
-        adLink: `http://localhost:3000/products/${result._id}`
+        adLink: `https://second-hand-client.vercel.app/products/${result._id}`
     };
     await sendEmail(authUser.email, 'Your project created successfully', 'projectCreateHtml', replacements);
 
@@ -245,7 +245,7 @@ const permissionProduct = async (productId: string, payload: { permission: strin
         adTitle: product.title || 'No title available',
         condition: product.condition || 'Unknown condition',
         adCategory: product.category || 'Unknown category',
-        adLink: `http://localhost:3000/products/${product._id}`
+        adLink: `https://second-hand-client.vercel.app/products/${product._id}`
     };
     if (user) {
         await sendEmail(user.email, 'Your project available for sell', 'ApprovedAdds', replacements);

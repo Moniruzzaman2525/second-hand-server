@@ -28,7 +28,7 @@ const createNewTransaction = async ({ authUser, sellerID, item }: { authUser: Jw
             adTitle: product.title || 'No title available',
             condition: product.condition || 'Unknown condition',
             adCategory: product.category || 'Unknown category',
-            adLink: `http://localhost:3000/dashboard/purchase-history`
+            adLink: `https://second-hand-client.vercel.app/dashboard/purchase-history`
         };
         await sendEmail(authUser.email, 'Your project available for sell', 'PurchaseHtml', replacements);
     }

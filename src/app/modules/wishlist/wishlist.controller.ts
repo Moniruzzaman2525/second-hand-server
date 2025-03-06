@@ -35,6 +35,7 @@ const removeWishlist = catchAsync(async (req, res) => {
         params: { wishlistId },
     } = req;
     const authUser = req.user as IJwtPayload;
+
     const result = await wishlistServices.removeWishlist({ authUser, wishlistId } );
     sendResponse(res, {
         statusCode: StatusCodes.OK,

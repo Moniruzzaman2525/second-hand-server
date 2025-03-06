@@ -24,7 +24,6 @@ export const sendEmail = async (to: string, subject: string, templateName: strin
 
     try {
         await transporter.sendMail(mailOptions);
-        console.log('Password reset email sent successfully');
     } catch (error) {
         console.error('Error sending email: ', error);
     }
