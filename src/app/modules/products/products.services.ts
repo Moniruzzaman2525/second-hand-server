@@ -12,6 +12,7 @@ import { Wishlist } from '../wishlist/wishlist.model';
 import { Transaction } from '../transactions/transactions.model';
 import { sendEmail } from '../../utils/sendEmail';
 import auth from '../../middleware/auth';
+import { Compare } from '../compare/compare.model';
 
 const createProduct = async (
     productData: Partial<TProduct>,
@@ -56,9 +57,7 @@ const getAllProduct = async (query: Record<string, unknown>, authUser: JwtPayloa
     const productQuery = new QueryBuilder(
         Product.find({
             permission: { $nin: ['pending', 'reject'] },
-            // status: {$ne: 'sold'}
-        })
-            .populate('userId', 'name phoneNumber'),
+        }).populate('userId', 'name phoneNumber'),
         pQuery
     )
         .search(['title', 'description'])
@@ -67,14 +66,25 @@ const getAllProduct = async (query: Record<string, unknown>, authUser: JwtPayloa
         .paginate()
         .fields()
         .priceRange(Number(minPrice) || 0, Number(maxPrice) || Infinity);
+
     const products = await productQuery.modelQuery.lean();
+
     if (authUser) {
-        const wishlist = await Wishlist.find({ userId: authUser.userId }).lean();
-        const wishlistProductIds = new Set(wishlist.map((item) => item.product.toString()));
+        const [wishlist, compareList] = await Promise.all([
+            Wishlist.find({ userId: authUser.userId }).lean(),
+            Compare.find({ userId: authUser.userId }).lean()
+        ]);
+
+        const wishlistProductIds = new Set(wishlist.map(item => item.product.toString()));
+        const compareProductIds = new Set(compareList.map(item => item.product.toString()));
+
         products.forEach((product: any) => {
-            product.wishlist = wishlistProductIds.has(product._id.toString());
+            const id = product._id.toString();
+            product.wishlist = wishlistProductIds.has(id);
+            product.compare = compareProductIds.has(id);
         });
     }
+
     const meta = await productQuery.countTotal();
 
     return {
@@ -159,14 +169,22 @@ const getSingleProduct = async (productId: string, authUser: JwtPayload) => {
     const product = productData.toObject();
 
     product.wishlist = false;
-    if (authUser) {
-        const wishlistItem = await Wishlist.findOne({
-            userId: authUser.userId,
-            product: productData._id
-        }).lean();
+    product.compare = false;
 
+    if (authUser) {
+        const [wishlistItem, compareItem] = await Promise.all([
+            Wishlist.findOne({
+                userId: authUser.userId,
+                product: productData._id,
+            }).lean(),
+            Compare.findOne({
+                userId: authUser.userId,
+                product: productData._id,
+            }).lean()
+        ]);
 
         product.wishlist = !!wishlistItem;
+        product.compare = !!compareItem;
     }
 
     return {

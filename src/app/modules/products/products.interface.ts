@@ -11,6 +11,7 @@ export interface TProduct {
     location: string;
     address: string;
     wishlist?: boolean;
+    compare?: boolean;
     views?: number;
     status?: 'available' | 'sold';
     permission?: 'pending' | 'accepted' | 'reject';
