@@ -11,6 +11,7 @@ import { JwtPayload } from 'jsonwebtoken';
 import { Wishlist } from '../wishlist/wishlist.model';
 import { Transaction } from '../transactions/transactions.model';
 import { sendEmail } from '../../utils/sendEmail';
+import auth from '../../middleware/auth';
 
 const createProduct = async (
     productData: Partial<TProduct>,
@@ -144,22 +145,35 @@ const getAllUserProduct = async (query: Record<string, unknown>, userID: string)
     };
 };
 
-const getSingleProduct = async (productId: string) => {
-
-    const product = await Product.findByIdAndUpdate(
+const getSingleProduct = async (productId: string, authUser: JwtPayload) => {
+    const productData = await Product.findByIdAndUpdate(
         productId,
         { $inc: { views: 1 } },
         { new: true }
     ).populate('userId', 'name phoneNumber email _id');
 
-    if (!product) {
+    if (!productData) {
         throw new AppError(StatusCodes.NOT_FOUND, 'Product not found');
+    }
+
+    const product = productData.toObject();
+
+    product.wishlist = false;
+    if (authUser) {
+        const wishlistItem = await Wishlist.findOne({
+            userId: authUser.userId,
+            product: productData._id
+        }).lean();
+
+
+        product.wishlist = !!wishlistItem;
     }
 
     return {
         product
     };
 };
+
 
 
 const updateProduct = async (

@@ -60,7 +60,8 @@ const getAllUserProductHandler = catchAsync(async (req, res) => {
 
 const getSingleProduct = catchAsync(async (req, res) => {
     const { productId } = req.params;
-    const result = await ProductService.getSingleProduct(productId);
+    const authUser = req.user as IJwtPayload;
+    const result = await ProductService.getSingleProduct(productId, authUser);
 
     sendResponse(res, {
         statusCode: StatusCodes.OK,
