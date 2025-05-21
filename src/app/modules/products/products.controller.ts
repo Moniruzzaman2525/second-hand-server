@@ -72,7 +72,7 @@ const getSingleProduct = catchAsync(async (req, res) => {
 const permissionProduct = catchAsync(async (req, res) => {
     const productId = req.params.productId
     const { action } = req.body;
-    const result = await ProductService.permissionProduct(productId,req.body);
+    const result = await ProductService.permissionProduct(productId, req.body);
 
     let message = '';
 
@@ -133,7 +133,9 @@ const deleteProduct = catchAsync(async (req, res) => {
 });
 const suggestProduct = catchAsync(async (req, res) => {
 
-    const result = await ProductService.suggestProduct(req.query);
+    const id = req.params.id
+
+    const result = await ProductService.suggestProduct(id);
 
     sendResponse(res, {
         statusCode: StatusCodes.OK,
