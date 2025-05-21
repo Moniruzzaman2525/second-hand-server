@@ -254,8 +254,17 @@ const permissionProduct = async (productId: string, payload: { permission: strin
     return completePermission;
 };
 
-
+const suggestProduct = async (query: Record<string, unknown>) => {
+    let result
+    const product = await Product.find({ category: query.category }).populate('userId', 'name phoneNumber').limit(4);
+    if (product.length === 0) {
+        result = await Product.find().populate('userId', 'name phoneNumber').limit(4);
+    } else {
+        result = product
+    }
+    return result
+}
 
 export const ProductService = {
-    createProduct, getAllProduct, getAllUserProduct, getSingleProduct, updateProduct, deleteProduct, getAllProductByAdmin, permissionProduct
+    createProduct, getAllProduct, getAllUserProduct, getSingleProduct, updateProduct, deleteProduct, getAllProductByAdmin, permissionProduct, suggestProduct
 }

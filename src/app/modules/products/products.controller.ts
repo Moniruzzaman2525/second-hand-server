@@ -131,8 +131,19 @@ const deleteProduct = catchAsync(async (req, res) => {
         data: result,
     });
 });
+const suggestProduct = catchAsync(async (req, res) => {
+
+    const result = await ProductService.suggestProduct(req.query);
+
+    sendResponse(res, {
+        statusCode: StatusCodes.OK,
+        success: true,
+        message: "Product deleted successfully!",
+        data: result,
+    });
+});
 
 
 export const ProductController = {
-    createProduct, getAllProduct, getAllUserProductHandler, getSingleProduct, updateProduct, deleteProduct, getAllProductByAdmin, permissionProduct
+    createProduct, getAllProduct, getAllUserProductHandler, getSingleProduct, updateProduct, deleteProduct, getAllProductByAdmin, permissionProduct, suggestProduct
 };

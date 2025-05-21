@@ -20,6 +20,7 @@ router.post(
 );
 
 router.get('/', alowAuth(UserRole.USER, UserRole.ADMIN), ProductController.getAllProduct);
+router.get('/suggest', ProductController.suggestProduct);
 router.get('/by-admin', auth(UserRole.ADMIN), ProductController.getAllProductByAdmin);
 router.get('/user-products', auth(UserRole.USER), ProductController.getAllUserProductHandler);
 router.get('/:productId', ProductController.getSingleProduct);
