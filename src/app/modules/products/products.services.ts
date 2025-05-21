@@ -145,15 +145,22 @@ const getAllUserProduct = async (query: Record<string, unknown>, userID: string)
 };
 
 const getSingleProduct = async (productId: string) => {
-    const product = await Product.findById(productId).populate('userId', 'name phoneNumber email _id')
+
+    const product = await Product.findByIdAndUpdate(
+        productId,
+        { $inc: { views: 1 } },
+        { new: true }
+    ).populate('userId', 'name phoneNumber email _id');
 
     if (!product) {
         throw new AppError(StatusCodes.NOT_FOUND, 'Product not found');
     }
+
     return {
         product
     };
 };
+
 
 const updateProduct = async (
     productId: string,

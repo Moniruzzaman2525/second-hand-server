@@ -1,5 +1,6 @@
 import { model, Schema } from "mongoose";
 import { TProduct } from "./products.interface";
+import { number } from "zod";
 
 const productSchema = new Schema<TProduct>({
     title: {
@@ -45,6 +46,9 @@ const productSchema = new Schema<TProduct>({
         type: String,
         enum: ['pending', 'complete', 'reject'],
         default: 'pending'
+    },
+    views: {
+        type: Number
     },
     category: {
         type: String,
