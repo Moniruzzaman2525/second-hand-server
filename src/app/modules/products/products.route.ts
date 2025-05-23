@@ -22,10 +22,10 @@ router.post(
 router.get('/', alowAuth(UserRole.USER, UserRole.ADMIN), ProductController.getAllProduct);
 
 router.get('/by-admin', auth(UserRole.ADMIN), ProductController.getAllProductByAdmin);
-router.get('/user-products', auth(UserRole.USER), ProductController.getAllUserProductHandler);
-router.get('/:productId', alowAuth(UserRole.USER, UserRole.ADMIN), ProductController.getSingleProduct);
-router.patch('/:productId', auth(UserRole.USER), multerUpload.fields([{ name: 'images' }]), parseBody, ProductController.updateProduct);
-router.delete('/:productId', auth(UserRole.USER), ProductController.deleteProduct);
+router.get('/user-products', auth(UserRole.USER, UserRole.ADMIN), ProductController.getAllUserProductHandler);
+router.get('/:productId', alowAuth(UserRole.USER, UserRole.ADMIN, UserRole.ADMIN), ProductController.getSingleProduct);
+router.patch('/:productId', auth(UserRole.USER, UserRole.ADMIN), multerUpload.fields([{ name: 'images' }]), parseBody, ProductController.updateProduct);
+router.delete('/:productId', auth(UserRole.USER, UserRole.ADMIN), ProductController.deleteProduct);
 router.patch('/:productId/permission', auth(UserRole.ADMIN), ProductController.permissionProduct)
 router.get('/suggestions/:id', ProductController.suggestProduct);
 
