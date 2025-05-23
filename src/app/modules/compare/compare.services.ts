@@ -61,10 +61,11 @@ const getUserCompare = async (query: Record<string, unknown>, authUser: JwtPaylo
 };
 
 
-const removeCompare = async ({ authUser, wishlistId: compareId }: { authUser: JwtPayload, wishlistId: string }) => {
+const removeCompare = async ({ authUser, compareId }: { authUser: JwtPayload, compareId: string }) => {
+
     const wishlistItem = await Compare.findOne({ userId: authUser.userId, product: compareId });
     if (!wishlistItem) {
-        throw new AppError(StatusCodes.NOT_FOUND, 'Item not found in wishlist');
+        throw new AppError(StatusCodes.NOT_FOUND, 'Item not found in compare');
     }
     const result = await Compare.deleteOne({ _id: wishlistItem._id });
 

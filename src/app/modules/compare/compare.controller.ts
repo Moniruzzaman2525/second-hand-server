@@ -31,12 +31,10 @@ const getUserCompare = catchAsync(async (req: Request, res: Response) => {
 });
 
 const removeCompare = catchAsync(async (req, res) => {
-    const {
-        params: { wishlistId: compareId },
-    } = req;
+    const compareId = req.params.compareId;
     const authUser = req.user as IJwtPayload;
 
-    const result = await compareServices.removeCompare({ authUser, wishlistId: compareId });
+    const result = await compareServices.removeCompare({ authUser, compareId });
     sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,

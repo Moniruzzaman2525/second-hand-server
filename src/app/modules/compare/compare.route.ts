@@ -11,4 +11,4 @@ router.get('/', auth(UserRole.USER, UserRole.ADMIN), compareController.getUserCo
 router.delete('/:compareId', auth(UserRole.USER, UserRole.ADMIN), compareController.removeCompare);
 
 
-export const wishlistRoute = router;
+export const compareRoute = router;
