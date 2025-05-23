@@ -44,6 +44,7 @@ const getUserCompare = async (query: Record<string, unknown>, authUser: JwtPaylo
             ...rest,
             ...(product || {}),
             wishlist: true,
+            compare: true,
             userId: {
                 _id: authUser.userId,
                 email: authUser.email,
